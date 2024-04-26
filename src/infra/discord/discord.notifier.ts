@@ -9,6 +9,6 @@ export class DiscordNotifier implements INotifier {
   ) {}
 
   send(notification: Notification) {
-    this.discord.send(this.formatter.format(notification));
+    return this.discord.send(this.formatter.format(notification));
   }
 }

@@ -28,12 +28,16 @@ export class DiscordService implements IConnectable {
   }
 
   async send(message: string) {
+    this.logger.log('Sending message...');
+
     const channel = await this.client.channels.fetch(this.config.channelId);
     if (!channel.isTextBased()) {
       this.logger.error(`Channel "${channel.name}" is not text based`);
       return;
     }
 
-    channel.send(message);
+    await channel.send(message);
+
+    this.logger.log('Message sent successfully!');
   }
 }

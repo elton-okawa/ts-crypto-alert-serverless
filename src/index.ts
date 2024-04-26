@@ -1,3 +1,5 @@
+import 'dotenv/config';
+
 import * as framework from '@google-cloud/functions-framework';
 import * as path from 'path';
 import * as fs from 'fs';
@@ -24,9 +26,10 @@ async function loadFunctions(): Promise<Record<string, HttpFunction>> {
 function setupProduction() {
   logger.log('Loading production...');
 
-  Object.entries(functions).forEach(([name, handler]) =>
-    framework.http(name, handler),
-  );
+  Object.entries(functions).forEach(([name, handler]) => {
+    logger.log(`Adding "${name}"`);
+    framework.http(name, handler);
+  });
 
   logger.log('Production loaded successfully!');
 }
@@ -34,11 +37,18 @@ function setupProduction() {
 function setupLocal() {
   logger.log('Loading local...');
 
+  for (const [name] of Object.entries(functions)) {
+    logger.log(`Providing at "/${name}"`);
+  }
+
   const indexHandler: HttpFunction = (req, res) => {
-    if (req.path in functions) {
-      return functions[req.path](req, res);
+    const name = req.path.slice(1);
+    if (name in functions) {
+      return functions[name](req, res);
     } else {
-      res.send('function not defined');
+      const message = `function "${name}" not defined`;
+      logger.error(message);
+      res.send(message);
     }
   };
 
