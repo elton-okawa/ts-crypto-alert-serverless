@@ -1,9 +1,9 @@
 import { HttpFunction } from '@google-cloud/functions-framework';
-import { SendAlertUseCase } from './use-case';
-import { cryptoRepository, notifier } from '@src/infra';
 import { handlerTemplateFactory } from '@src/lib';
+import { UpdatePriceUseCase } from './use-case';
+import { cryptoApi, cryptoRepository } from '@src/infra';
 
-const useCase = new SendAlertUseCase(cryptoRepository, notifier);
+const useCase = new UpdatePriceUseCase(cryptoRepository, cryptoApi);
 
 const handler: HttpFunction = async (_req, res) => {
   await useCase.execute();

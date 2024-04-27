@@ -24,7 +24,7 @@ export class DiscordService implements IConnectable {
 
     await this.client.destroy();
 
-    this.logger.log('Disconnected successfully!');
+    this.logger.log('Discord client disconnected successfully!');
   }
 
   async send(message: string) {

@@ -16,13 +16,13 @@ export class DatabaseService implements IConnectable {
     );
     this.client = await MongoClient.connect(this.config.url);
     this.db = this.client.db(this.config.name);
-    this.logger.log('Connected successfully');
+    this.logger.log('MongoDB connected successfully!');
   }
 
   async disconnect() {
-    this.logger.log('Disconnecting MongoDB');
+    this.logger.log('Disconnecting MongoDB...');
     await this.client.close();
-    this.logger.log('Disconnected successfully');
+    this.logger.log('MongoDB disconnected successfully!');
   }
 
   censorUrl(url: string) {
