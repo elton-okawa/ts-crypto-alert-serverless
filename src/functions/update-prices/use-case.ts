@@ -26,6 +26,7 @@ export class UpdatePricesUseCase implements IUseCase<void, CryptoPrice[]> {
     });
 
     await this.repository.savePrices(prices);
+    await this.repository.cryptocurrenciesUpdated(symbols);
     this.logger.log('Prices updated successfully!');
 
     return prices;

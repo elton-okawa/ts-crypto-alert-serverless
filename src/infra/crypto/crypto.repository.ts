@@ -152,7 +152,10 @@ export class CryptoRepository implements ICryptoRepository {
 
     await this.database.db
       .collection<Cryptocurrency>(Cryptocurrency.TABLE)
-      .updateMany({ symbol: { $in: symbols } }, { updatedAt: new Date() });
+      .updateMany(
+        { symbol: { $in: symbols } },
+        { $set: { updatedAt: new Date() } },
+      );
 
     this.logger.debug(`UpdatedAt set successfully!`);
   }
