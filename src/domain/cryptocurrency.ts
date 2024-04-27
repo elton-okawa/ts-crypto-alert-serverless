@@ -5,11 +5,15 @@ export class Cryptocurrency extends Entity {
 
   name: string;
   symbol: string;
+  historicalData: boolean | null;
+  updatedAt: Date | null;
 
-  private constructor(params: Partial<Cryptocurrency>) {
+  constructor(params: Partial<Cryptocurrency>) {
     super(params);
 
     this.name = params.name;
     this.symbol = params.symbol;
+    this.historicalData = params.historicalData ?? null;
+    this.updatedAt = params.updatedAt ?? null;
   }
 }

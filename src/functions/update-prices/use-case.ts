@@ -6,8 +6,8 @@ import {
 } from '@src/domain';
 import { Logger } from '@src/logger';
 
-export class UpdatePriceUseCase implements IUseCase<void, CryptoPrice[]> {
-  private readonly logger = new Logger(UpdatePriceUseCase.name);
+export class UpdatePricesUseCase implements IUseCase<void, CryptoPrice[]> {
+  private readonly logger = new Logger(UpdatePricesUseCase.name);
 
   constructor(
     private repository: ICryptoRepository,

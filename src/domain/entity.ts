@@ -11,6 +11,6 @@ export abstract class Entity extends ValueObject {
   constructor(params: Partial<Entity>) {
     super();
 
-    this._id = params.id ?? new ObjectId();
+    this._id = params._id ?? new ObjectId();
   }
 }

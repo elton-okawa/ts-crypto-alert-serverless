@@ -1,8 +1,10 @@
 import { HttpFunction } from '@google-cloud/functions-framework';
 import sendAlert from './send-alert';
-import updatePrice from './update-price';
+import updatePrices from './update-prices';
+import updateHistoricalPrices from './update-historical-prices';
 
 export default {
   'send-alert': sendAlert,
-  'update-price': updatePrice,
+  'update-prices': updatePrices,
+  'update-historical-prices': updateHistoricalPrices,
 } satisfies Record<string, HttpFunction>;

@@ -53,16 +53,33 @@ export class CryptoRepository implements ICryptoRepository {
   }
 
   async listSymbols(): Promise<string[]> {
-    this.logger.log('Fetching symbols...');
+    this.logger.debug('Listing symbols...');
+
     const cryptocurrencies = await this.database.db
       .collection<Cryptocurrency>(Cryptocurrency.TABLE)
       .find()
       .toArray();
-
     const symbols = cryptocurrencies.map((crypto) => crypto.symbol);
-    this.logger.log(`Found: [${symbols}]`);
 
+    this.logger.debug(`Found symbols: [${symbols}]`);
     return symbols;
+  }
+
+  async listNewCryptocurrencies(): Promise<Cryptocurrency[]> {
+    this.logger.debug(`Fetching new cryptocurrencies...`);
+
+    const cryptocurrencies = (
+      await this.database.db
+        .collection<Cryptocurrency>(Cryptocurrency.TABLE)
+        .find({ historicalData: { $exists: false } })
+        .toArray()
+    ).map((c) => Cryptocurrency.create(c));
+
+    this.logger.debug(
+      `Found new cryptocurrencies: [${cryptocurrencies.map((c) => c.symbol)}]`,
+    );
+
+    return cryptocurrencies;
   }
 
   async savePrices(prices: CryptoPrice[]): Promise<void> {
@@ -113,5 +130,30 @@ export class CryptoRepository implements ICryptoRepository {
 
     this.logger.log(`Mean hourly price for '${symbol}' is '${result.mean}'`);
     return result;
+  }
+
+  async saveCryptocurrencies(cryptocurrencies: Cryptocurrency[]) {
+    this.logger.debug(`Saving ${cryptocurrencies.length} cryptocurrencies...`);
+
+    await this.database.db.collection(Cryptocurrency.TABLE).bulkWrite(
+      cryptocurrencies.map(
+        (crypto) => ({
+          replaceOne: { filter: { _id: crypto.id }, replacement: crypto },
+        }),
+        { ordered: false },
+      ),
+    );
+
+    this.logger.debug('Cryptocurrencies saved successfully!');
+  }
+
+  async cryptocurrenciesUpdated(symbols: string[]) {
+    this.logger.debug(`Setting updatedAt of [${symbols}] cryptocurrencies...`);
+
+    await this.database.db
+      .collection<Cryptocurrency>(Cryptocurrency.TABLE)
+      .updateMany({ symbol: { $in: symbols } }, { updatedAt: new Date() });
+
+    this.logger.debug(`UpdatedAt set successfully!`);
   }
 }
