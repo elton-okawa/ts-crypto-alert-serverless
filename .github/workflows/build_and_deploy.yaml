@@ -41,7 +41,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: ${{ steps.compress.outputs.filename }}
-          path: dist
+          path: ${{ steps.compress.outputs.filename }}
 
   upload:
     name: Upload to GCP
@@ -97,10 +97,10 @@ jobs:
     runs-on: ubuntu-latest
     needs: upload
     steps:
-      - name: Terraform init
+      - name: Terraform login
         run: |
           export TF_TOKEN=${{ secrets.TF_API_TOKEN }}
-          terraform init
+          terraform login
       - name: Terraform apply
         run: |
           export TF_VAR_source_filepath=${{ needs.upload.outputs.source_path }}
