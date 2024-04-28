@@ -69,6 +69,7 @@ jobs:
             gcloud storage buckets create --location=us-east1 ${{ env.BUCKET_NAME }}
           fi
       - name: Download build
+        id: download_build
         uses: actions/download-artifact@v4
         with:
           name: ${{ needs.build.outputs.build_artifact }}
@@ -76,7 +77,7 @@ jobs:
         id: 'upload-file'
         uses: 'google-github-actions/upload-cloud-storage@v2'
         with:
-          path: ${{ needs.build.outputs.build_artifact }}.zip
+          path: ${{ steps.download_build.outputs.download-path }}
           destination: ${{ env.BUCKET_NAME }}
 
   deploy:
