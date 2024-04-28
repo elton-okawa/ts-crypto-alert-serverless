@@ -8,7 +8,7 @@ on:
 
 env:
   PROJECT_ID: crypto-alert-421018
-  BUCKET_NAME: crypto-alert-serverless-gcf-source
+  BUCKET_NAME: gs://crypto-alert-serverless-gcf-source
   GCS_LOCATION: us-east1
   REGION: us-east1
 
@@ -66,7 +66,7 @@ jobs:
             echo "GCP Bucket ${{ env.BUCKET_NAME }} already exists"
           else
             echo "Creating GCP Bucket ${{ env.BUCKET_NAME }}"
-            gcloud storage buckets create --location=us-east1 gs://${{ env.BUCKET_NAME }}
+            gcloud storage buckets create --location=us-east1 ${{ env.BUCKET_NAME }}
           fi
       - name: Download build
         uses: actions/download-artifact@v4
