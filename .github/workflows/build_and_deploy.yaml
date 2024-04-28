@@ -96,12 +96,12 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     needs: upload
+    env:
+      TF_TOKEN_app_terraform_io: ${{ secrets.TF_API_TOKEN }}
     steps:
-      - name: Terraform login
-        run: |
-          export TF_TOKEN=${{ secrets.TF_API_TOKEN }}
-          terraform login
+      - name: Terraform init
+        run: terraform init
       - name: Terraform apply
-        run: |
-          export TF_VAR_source_filepath=${{ needs.upload.outputs.source_path }}
-          terraform apply
+        run: terraform apply
+        env:
+          TF_VAR_source_filepath: ${{ needs.upload.outputs.source_path }}
