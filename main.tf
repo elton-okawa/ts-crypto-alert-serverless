@@ -3,12 +3,6 @@ provider "google" {
   region      = var.region
 }
 
-resource "google_storage_bucket_object" "object" {
-  name   = "function-source.zip"
-  bucket = var.bucket
-  source = var.source_filepath
-}
-
 resource "google_cloudfunctions2_function" "function" {
   for_each = {
     for index, function in var.functions:
@@ -24,7 +18,7 @@ resource "google_cloudfunctions2_function" "function" {
     source {
       storage_source {
         bucket = var.bucket
-        object = google_storage_bucket_object.object.name
+        object = var.source_filepath
       }
     }
   }
