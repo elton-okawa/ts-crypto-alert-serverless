@@ -81,6 +81,11 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: ${{ needs.build.outputs.build_artifact }}
+      - name: debug
+        run: |
+          ls
+          echo "${{ steps.download_build.outputs.download-path }}"
+          ls ${{ steps.download_build.outputs.download-path }}
       - name: Upload build
         id: 'upload-file'
         uses: 'google-github-actions/upload-cloud-storage@v2'
