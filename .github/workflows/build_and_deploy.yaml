@@ -73,7 +73,7 @@ jobs:
             echo "GCP Bucket ${{ env.BUCKET_NAME }} already exists"
           else
             echo "Creating GCP Bucket ${{ env.BUCKET_NAME }}"
-            gcloud storage buckets create ${{ env.BUCKET_NAME }}
+            gcloud storage buckets create gs://${{ env.BUCKET_NAME }}
           fi
       - name: Download build
         uses: actions/download-artifact@v4
