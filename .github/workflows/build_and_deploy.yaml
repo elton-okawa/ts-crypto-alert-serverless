@@ -101,6 +101,7 @@ jobs:
       - build
     env:
       TF_TOKEN_app_terraform_io: ${{ secrets.TF_API_TOKEN }}
+      TF_VAR_source_filepath: ${{ needs.upload.outputs.source_path }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -110,5 +111,3 @@ jobs:
         run: terraform plan -out ${{ needs.build.outputs.version }}
       - name: Terraform apply
         run: terraform apply ${{ needs.build.outputs.version }}
-        env:
-          TF_VAR_source_filepath: ${{ needs.upload.outputs.source_path }}
