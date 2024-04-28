@@ -16,7 +16,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     outputs:
-      build_artifact: ${{ steps.package_version.outputs.version }}
+      build_artifact: ${{ steps.compress.outputs.filename }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
