@@ -66,7 +66,7 @@ jobs:
       - name: 'Set up Cloud SDK'
         uses: 'google-github-actions/setup-gcloud@v2'
         with:
-          version: '>= 473.0.0'
+          version: '>= 472.0.0'
       - name: Create GCloud Bucket if not exist
         run: |
           if gcloud storage buckets describe "${{ env.BUCKET_NAME }}" &> /dev/null ; then
