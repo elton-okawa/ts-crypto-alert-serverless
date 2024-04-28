@@ -16,7 +16,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     outputs:
-      build_output: ${{ steps.compress.outputs.filename }}
+      build_artifact: ${{ steps.package_version.outputs.version }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -30,18 +30,11 @@ jobs:
         run: yarn
       - name: Build
         run: yarn build
-      - name: Zip files
-        id: compress
-        run: |
-          FILENAME=${{ steps.package_version.outputs.version }}.zip
-          echo "Compressed file: '$FILENAME'"
-          zip -r $FILENAME dist
-          echo "filename=$FILENAME" >> $GITHUB_OUTPUT
       - name: Archive production artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: build_output
-          path: ${{ steps.compress.outputs.filename }}
+          name: ${{ steps.package_version.outputs.version }}
+          path: dist
 
   upload:
     runs-on: ubuntu-latest
@@ -73,17 +66,17 @@ jobs:
             echo "GCP Bucket ${{ env.BUCKET_NAME }} already exists"
           else
             echo "Creating GCP Bucket ${{ env.BUCKET_NAME }}"
-            gcloud storage buckets create gs://${{ env.BUCKET_NAME }}
+            gcloud storage buckets create --location=us-east1 gs://${{ env.BUCKET_NAME }}
           fi
       - name: Download build
         uses: actions/download-artifact@v4
         with:
-          name: ${{ needs.build.outputs.build_output }}
+          name: ${{ needs.build.outputs.build_artifact }}
       - name: Upload build
         id: 'upload-file'
         uses: 'google-github-actions/upload-cloud-storage@v2'
         with:
-          path: ${{ needs.build.outputs.build_output }}
+          path: ${{ needs.build.outputs.build_artifact }}
           destination: ${{ env.BUCKET_NAME }}
 
   deploy:
