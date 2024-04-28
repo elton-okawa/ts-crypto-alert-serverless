@@ -85,7 +85,7 @@ jobs:
         id: 'upload-file'
         uses: 'google-github-actions/upload-cloud-storage@v2'
         with:
-          path: ${{ steps.download_build.outputs.download-path }}
+          path: ${{ steps.download_build.outputs.download-path }}/${{ needs.build.outputs.build_artifact }}
           destination: ${{ env.BUCKET_NAME }}
 
   deploy:
