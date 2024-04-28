@@ -18,7 +18,7 @@ resource "google_cloudfunctions2_function" "function" {
     source {
       storage_source {
         bucket = var.bucket
-        object = var.source_filepath
+        object = var.source_filepath 
       }
     }
   }
