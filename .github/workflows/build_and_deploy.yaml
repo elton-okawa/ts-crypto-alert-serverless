@@ -53,6 +53,8 @@ jobs:
     outputs:
       source_path: ${{ steps.upload-file.outputs.uploaded }}
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
       - name: Google Auth
         id: auth
         uses: 'google-github-actions/auth@v2'
