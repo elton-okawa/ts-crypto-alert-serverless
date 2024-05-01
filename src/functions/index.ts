@@ -4,7 +4,7 @@ import updatePrices from './update-prices';
 import updateHistoricalPrices from './update-historical-prices';
 
 export default {
-  sendAlert: sendAlert,
-  updatePrices: updatePrices,
-  updateHistoricalPrices: updateHistoricalPrices,
+  'send-alert': sendAlert,
+  'update-prices': updatePrices,
+  'update-historical-prices': updateHistoricalPrices,
 } satisfies Record<string, HttpFunction>;
