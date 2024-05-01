@@ -14,8 +14,7 @@ resource "google_cloudfunctions2_function" "function" {
 
   build_config {
     runtime = var.runtime
-    // it seems it must adhere to https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#dns-label-names
-    entry_point = replace(each.value.target, "-", "")
+    entry_point = each.value.target
     source {
       storage_source {
         bucket = var.bucket
