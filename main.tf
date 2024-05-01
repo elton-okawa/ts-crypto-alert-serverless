@@ -8,7 +8,7 @@ resource "google_cloudfunctions2_function" "function" {
     for index, function in var.functions:
     function.target => function
   }
-  name = "function-v2"
+  name = each.value.target
   location = var.region
   description = each.value.description
 
