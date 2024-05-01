@@ -52,8 +52,6 @@ jobs:
         with:
           name: ${{ needs.build.outputs.build_artifact }}
           path: ${{ env.TF_VAR_source_filepath }}
-      - name: list
-        run: ls -la /tmp/build
       - name: Terraform init
         run: terraform init
       - name: Terraform plan
