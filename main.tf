@@ -15,6 +15,10 @@ resource "google_cloud_tasks_queue" "task" {
     max_concurrent_dispatches = 1
     max_dispatches_per_second = 10
   }
+
+  retry_config {
+    max_attempts = 3
+  }
 }
 
 resource "google_cloudfunctions2_function" "function" {
