@@ -15,7 +15,7 @@ variable "bucket" {
 }
 
 variable "source_filepath" {
-  description = "Google Function source's filepath in bucket"
+  description = "Google Function source's filepath in current machine"
   type        = string
 }
 

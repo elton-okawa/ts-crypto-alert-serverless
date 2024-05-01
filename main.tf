@@ -3,6 +3,24 @@ provider "google" {
   region      = var.region
 }
 
+resource "google_storage_bucket" "default" {
+  name                        = var.bucket
+  location                    = "us-east1"
+  uniform_bucket_level_access = true
+}
+
+data "archive_file" "default" {
+  type        = "zip"
+  output_path = "/tmp/function-source.zip"
+  source_dir  = var.source_filepath
+}
+
+resource "google_storage_bucket_object" "object" {
+  name   = "function-source.zip"
+  bucket = google_storage_bucket.default.name
+  source = data.archive_file.default.output_path 
+}
+
 resource "google_cloudfunctions2_function" "function" {
   for_each = {
     for index, function in var.functions:
@@ -17,8 +35,8 @@ resource "google_cloudfunctions2_function" "function" {
     entry_point = each.value.target
     source {
       storage_source {
-        bucket = var.bucket
-        object = var.source_filepath 
+        bucket = google_storage_bucket.default.name
+        object = google_storage_bucket_object.object.name 
       }
     }
   }
