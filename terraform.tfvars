@@ -1,12 +1,12 @@
 project_id = "crypto-alert-421018"
 bucket = "crypto-alert-serverless-gcf-source"
 functions = [ {
-  target: "send-alert"
+  target: "sendAlert"
   description: "Send alerts on Discord"
 }, {
-  target: "update-historical-prices"
+  target: "updateHistoricalPrices"
   description = "Update historical prices if not present"
 }, {
-  target: "update-prices"
+  target: "updatePrices"
   description: "Fetch latest price"
 }]
