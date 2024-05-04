@@ -1,27 +1,11 @@
 import 'dotenv/config';
 
 import * as framework from '@google-cloud/functions-framework';
-import * as path from 'path';
-import * as fs from 'fs';
 import { HttpFunction } from '@google-cloud/functions-framework';
 import { Logger } from './logger';
 import functions from './functions';
 
 const logger = new Logger('Root');
-
-async function loadFunctions(): Promise<Record<string, HttpFunction>> {
-  const functionsPath = path.join(__dirname, 'functions');
-  const functionDir = fs.readdirSync(path.join(__dirname, 'functions'));
-
-  const functions = await Promise.all(
-    functionDir.map(async (dir) => {
-      const handler = await import(path.join(functionsPath, dir));
-      return [dir, handler];
-    }),
-  );
-
-  return Object.fromEntries(functions);
-}
 
 function setupProduction() {
   logger.log('Loading production...');

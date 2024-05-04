@@ -8,6 +8,7 @@ import {
   Period,
   IUseCase,
   INotifier,
+  PeriodHelper,
 } from '@src/domain';
 import { Logger } from '@src/logger';
 
@@ -66,7 +67,7 @@ export class SendAlertUseCase implements IUseCase<void, void> {
       configs.map(async (config) => {
         const lastPeriodPrice = await this.repository.mostRecentPrice(
           symbol,
-          Period.getDate(config.period, lastPrice.createdAt),
+          PeriodHelper.getDate(config.period, lastPrice.createdAt),
         );
         this.logger.log(
           `'${symbol}' price '${lastPrice.price}' for '${config.period}'`,
