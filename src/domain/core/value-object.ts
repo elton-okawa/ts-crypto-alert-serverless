@@ -1,15 +1,15 @@
 export abstract class ValueObject {
-  static create<TValueObject extends ValueObject>(
-    this: new (params: Partial<TValueObject>) => TValueObject,
-    params: Partial<TValueObject>,
-  ): TValueObject {
+  static create<TParams, TResult extends ValueObject>(
+    this: new (params: TParams) => TResult,
+    params: TParams,
+  ): TResult {
     return new this(params);
   }
 
-  static createMany<TValueObject extends ValueObject>(
-    this: new (params: Partial<TValueObject>) => TValueObject,
-    params: Partial<TValueObject>[],
-  ): TValueObject[] {
+  static createMany<TParams, TResult extends ValueObject>(
+    this: new (params: TParams) => TResult,
+    params: TParams[],
+  ): TResult[] {
     return params.map((p) => new this(p));
   }
 }

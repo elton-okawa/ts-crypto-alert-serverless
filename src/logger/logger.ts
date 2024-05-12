@@ -2,14 +2,14 @@ export class Logger {
   constructor(private context: string) {}
 
   log(message: string) {
-    console.log(`[${this.context}] ${message}`);
+    console.log(`[INFO] [${this.context}] ${message}`);
   }
 
   debug(message: string) {
-    console.debug(`[${this.context}] ${message}`);
+    console.debug(`[DEBUG] [${this.context}] ${message}`);
   }
 
   error(message: string) {
-    console.error(`[${this.context}] ${message}`);
+    console.error(`[ERROR] [${this.context}] ${message}`);
   }
 }

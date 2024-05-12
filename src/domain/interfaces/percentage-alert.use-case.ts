@@ -1,10 +1,14 @@
-import { PercentageAlert, PercentageNotification } from '@src/domain/entities';
+import {
+  Cryptocurrency,
+  PercentageAlert,
+  PercentageNotification,
+} from '@src/domain/entities';
 import { IUseCase } from './use-case';
 
-export type Params = {
-  symbol: string;
+export type PercentageAlertUseCaseParams = {
+  cryptocurrency: Cryptocurrency;
   configs: PercentageAlert[];
 };
 
 export interface IPercentageAlertUseCase
-  extends IUseCase<Params, PercentageNotification[]> {}
+  extends IUseCase<PercentageAlertUseCaseParams, PercentageNotification[]> {}

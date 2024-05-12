@@ -2,6 +2,7 @@ import { Cryptocurrency, Alert, CryptoPrice } from '@src/domain/entities';
 
 export interface ICryptoRepository {
   listSymbols(): Promise<string[]>;
+  listCryptocurrencies(): Promise<Cryptocurrency[]>;
   listNewCryptocurrencies(): Promise<Cryptocurrency[]>;
   savePrices(prices: CryptoPrice[]): Promise<void>;
   listAlerts(): Promise<Alert[]>;
