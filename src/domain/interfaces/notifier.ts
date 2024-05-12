@@ -1,4 +1,4 @@
-import { Notification } from '../notification';
+import { Notification } from '@src/domain/entities';
 
 export interface INotifier {
   send(notification: Notification): Promise<void>;

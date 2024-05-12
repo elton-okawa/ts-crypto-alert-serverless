@@ -1,4 +1,4 @@
-import { Notification } from '../notification';
+import { Notification } from '@src/domain/entities';
 
 export interface INotificationFormatter {
   format(notification: Notification): string;

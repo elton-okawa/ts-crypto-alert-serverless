@@ -1,4 +1,4 @@
-import { Entity } from '@src/domain/entity';
+import { Entity } from '@src/domain/core';
 
 export class Cryptocurrency extends Entity {
   static readonly TABLE = 'cryptocurrency';

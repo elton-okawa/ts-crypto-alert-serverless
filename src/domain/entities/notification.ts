@@ -1,4 +1,4 @@
-import { ValueObject } from './value-object';
+import { ValueObject } from '@src/domain/core';
 import { CryptoPrice } from './crypto-price';
 import { Period } from './period';
 

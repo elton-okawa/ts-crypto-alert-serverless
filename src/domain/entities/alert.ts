@@ -1,9 +1,8 @@
-import { Entity } from './entity';
 import { Period } from './period';
 import { toMap } from '@src/lib';
 import { subHours, setMinutes, setSeconds, setMilliseconds } from 'date-fns/fp';
 import { compose } from 'lodash/fp';
-import { ValueObject } from './value-object';
+import { Entity, ValueObject } from '@src/domain/core';
 
 export class Alert extends Entity {
   static readonly TABLE = 'alert';
