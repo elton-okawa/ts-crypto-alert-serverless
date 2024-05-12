@@ -1,4 +1,4 @@
-import { Entity } from '@src/domain/entity';
+import { Entity } from '@src/domain/core';
 import { dollar } from '@src/lib';
 
 export class CryptoPrice extends Entity {

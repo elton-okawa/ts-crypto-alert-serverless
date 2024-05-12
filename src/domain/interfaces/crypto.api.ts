@@ -1,4 +1,4 @@
-import { CryptoPrice } from '../crypto-price';
+import { CryptoPrice } from '@src/domain/entities';
 
 export interface ICryptoAPI {
   getPrices(params: GetPricesParams): Promise<CryptoPrice[]>;

@@ -65,6 +65,20 @@ export class CryptoRepository implements ICryptoRepository {
     return symbols;
   }
 
+  async listCryptocurrencies(): Promise<Cryptocurrency[]> {
+    this.logger.debug('Listing cryptocurrencies...');
+
+    const cryptocurrencies = await this.database.db
+      .collection<Cryptocurrency>(Cryptocurrency.TABLE)
+      .find()
+      .toArray();
+
+    this.logger.debug(
+      `Found cryptocurrencies: [${cryptocurrencies.map((crypto) => crypto.symbol)}]`,
+    );
+    return Cryptocurrency.createMany(cryptocurrencies);
+  }
+
   async listNewCryptocurrencies(): Promise<Cryptocurrency[]> {
     this.logger.debug(`Fetching new cryptocurrencies...`);
 

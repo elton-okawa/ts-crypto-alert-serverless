@@ -1,9 +1,8 @@
-import { CryptoPrice } from '../crypto-price';
-import { Alert } from '../alert';
-import { Cryptocurrency } from '../cryptocurrency';
+import { Cryptocurrency, Alert, CryptoPrice } from '@src/domain/entities';
 
 export interface ICryptoRepository {
   listSymbols(): Promise<string[]>;
+  listCryptocurrencies(): Promise<Cryptocurrency[]>;
   listNewCryptocurrencies(): Promise<Cryptocurrency[]>;
   savePrices(prices: CryptoPrice[]): Promise<void>;
   listAlerts(): Promise<Alert[]>;
