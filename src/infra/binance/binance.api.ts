@@ -54,13 +54,22 @@ export class BinanceAPI implements ICryptoAPI {
 
     const fullSymbol = `${symbol}${tokenPair}`;
 
-    const { data } = await axios.get<Kline[]>(this.url('/api/v3/uiKlines'), {
-      params: {
-        symbol: fullSymbol,
-        interval: '1w',
-        startTime: '0',
+    const { data } = await axios.get<Kline[] & { code: number }>(
+      this.url('/api/v3/uiKlines'),
+      {
+        params: {
+          symbol: fullSymbol,
+          interval: '1w',
+          startTime: '0',
+        },
       },
-    });
+    );
+    if (data?.code === -1121) {
+      this.logger.error(
+        `Historical price for full symbol "${fullSymbol}" not found. Check binance US restrictions`,
+      );
+      return [];
+    }
 
     const result = data.map((kline) =>
       CryptoPrice.create({

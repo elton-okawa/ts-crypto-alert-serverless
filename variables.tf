@@ -33,3 +33,8 @@ variable "functions" {
   }))
   default = []
 }
+
+variable "binance_api_url" {
+  description = "Binance API URL"
+  type = string
+}
