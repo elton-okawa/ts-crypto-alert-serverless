@@ -19,6 +19,8 @@ export class SendAlertUseCase implements IUseCase<void, void> {
   ) {}
 
   async execute(): Promise<void> {
+    this.logger.log('Starting use case...');
+
     const [cryptocurrencies, alertConfigs] = await Promise.all([
       this.repository.listCryptocurrencies(),
       this.repository.listAlerts(),
@@ -45,9 +47,17 @@ export class SendAlertUseCase implements IUseCase<void, void> {
 
     await this.repository.saveCryptocurrencies(cryptocurrencies);
 
-    await this.notifier.send(
-      Notification.create({ percentages: percentageNotifications }),
-    );
+    const notification = Notification.create({
+      percentages: percentageNotifications,
+    });
+    if (!notification.hasNotifications()) {
+      this.logger.log('There is no notifications to send');
+      return;
+    }
+
+    await this.notifier.send(notification);
+
+    this.logger.log('Finished use case!');
   }
 
   private alertFor(symbol: string, alertMap: Record<string, Alert>): Alert {

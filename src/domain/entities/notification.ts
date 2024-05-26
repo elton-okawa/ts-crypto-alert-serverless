@@ -10,6 +10,10 @@ export class Notification extends ValueObject {
 
     this.percentages = PercentageNotification.createMany(params.percentages);
   }
+
+  hasNotifications(): boolean {
+    return this.percentages.length > 0;
+  }
 }
 
 export class PercentageNotification extends ValueObject {
