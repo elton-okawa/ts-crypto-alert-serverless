@@ -26,10 +26,12 @@ export class DiscordMessageFormatter implements INotificationFormatter {
 
     return [
       'Percentage:',
-      ...Object.entries(grouped).flatMap(([period, notifications]) => {
+      ...Object.keys(Period).flatMap((period) => {
+        if (!(period in grouped)) return [];
+
         return [
           `  ${period}:`,
-          ...notifications.map(
+          ...grouped[period].map(
             (percentage) =>
               `    ${this.formatPercentage(percentage, { colorize: false })}`,
           ),
