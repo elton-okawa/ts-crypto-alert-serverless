@@ -12,4 +12,8 @@ export class Logger {
   error(message: string) {
     console.error(`[ERROR] [${this.context}] ${message}`);
   }
+
+  warn(message: string) {
+    console.warn(`[WARN] [${this.context}] ${message}`);
+  }
 }
