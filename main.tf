@@ -8,7 +8,7 @@ resource "google_cloud_tasks_queue" "task" {
     for index, function in var.functions:
     function.target => function
   }
-  name = "${each.value.target}-queue"
+  name = "crypto-${each.value.target}-queue"
   location = var.region
 
   rate_limits {
