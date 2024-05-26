@@ -11,7 +11,10 @@ export interface ICryptoRepository {
     fromDate: Date,
     toDate: Date,
   ): Promise<MeanPriceResult>;
-  mostRecentPrice(symbol: string, startingFrom: Date): Promise<CryptoPrice>;
+  mostRecentPrice(
+    symbol: string,
+    startingFrom: Date,
+  ): Promise<CryptoPrice | null>;
   saveCryptocurrencies(cryptocurrencies: Cryptocurrency[]): Promise<void>;
   cryptocurrenciesUpdated(symbols: string[]): Promise<void>;
 }

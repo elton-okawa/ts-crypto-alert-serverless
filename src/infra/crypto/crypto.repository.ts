@@ -28,7 +28,7 @@ export class CryptoRepository implements ICryptoRepository {
   async mostRecentPrice(
     symbol: string,
     startingFrom: Date,
-  ): Promise<CryptoPrice> {
+  ): Promise<CryptoPrice | null> {
     this.logger.log(
       `Fetching most recent price for '${symbol}' starting from '${startingFrom.toISOString()}'...`,
     );
@@ -41,9 +41,10 @@ export class CryptoRepository implements ICryptoRepository {
       .toArray();
 
     if (!result) {
-      throw new Error(
+      this.logger.warn(
         `Most recent price not found starting from '${startingFrom.toISOString()}' for '${symbol}'`,
       );
+      return null;
     }
 
     this.logger.log(

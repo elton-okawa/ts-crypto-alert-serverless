@@ -23,6 +23,13 @@ export class PercentageAlertUseCase implements IPercentageAlertUseCase {
       cryptocurrency.symbol,
       new Date(),
     );
+    if (!lastPrice) {
+      this.logger.error(
+        `Current price not found for "${cryptocurrency.symbol}"`,
+      );
+      return [];
+    }
+
     this.logger.log(
       `'${cryptocurrency.symbol}' last price '${lastPrice.price}'`,
     );
@@ -61,6 +68,13 @@ export class PercentageAlertUseCase implements IPercentageAlertUseCase {
       cryptocurrency.symbol,
       PeriodHelper.getDate(config.period, lastPrice.createdAt),
     );
+    if (!lastPeriodPrice) {
+      this.logger.warn(
+        `'${cryptocurrency.symbol}' price for period '${config.period}' not found, skipping`,
+      );
+      return null;
+    }
+
     this.logger.log(
       `'${cryptocurrency.symbol}' price '${lastPrice.price}' for '${config.period}'`,
     );
