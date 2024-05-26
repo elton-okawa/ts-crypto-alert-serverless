@@ -46,7 +46,7 @@ resource "google_cloudfunctions2_function" "function" {
     available_memory    = "256M"
     timeout_seconds     = 60
     environment_variables = {
-      BINANCE_API_URL = "https://data.binance.com"
+      BINANCE_API_URL = var.binance_api_url
       DATABASE_NAME = "crypto-alert"
     }
 
