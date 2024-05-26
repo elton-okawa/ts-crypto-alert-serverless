@@ -85,7 +85,7 @@ export class CryptoRepository implements ICryptoRepository {
     const cryptocurrencies = (
       await this.database.db
         .collection<Cryptocurrency>(Cryptocurrency.TABLE)
-        .find({ historicalData: { $exists: false } })
+        .find({ historicalData: { $ne: true } })
         .toArray()
     ).map((c) => Cryptocurrency.create(c));
 
