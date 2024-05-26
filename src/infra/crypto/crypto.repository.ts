@@ -35,7 +35,7 @@ export class CryptoRepository implements ICryptoRepository {
 
     const [result] = await this.database.db
       .collection<CryptoPrice>(CryptoPrice.TABLE)
-      .find({ createdAt: { $lt: startingFrom } })
+      .find({ symbol, createdAt: { $lt: startingFrom } })
       .sort({ createdAt: -1 })
       .limit(1)
       .toArray();

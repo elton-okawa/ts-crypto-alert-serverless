@@ -62,8 +62,6 @@ export class BinanceAPI implements ICryptoAPI {
       },
     });
 
-    console.log(data);
-
     const result = data.map((kline) =>
       CryptoPrice.create({
         symbol,
