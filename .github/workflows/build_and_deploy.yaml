@@ -9,7 +9,7 @@ env:
   PROJECT_ID: crypto-alert-421018
   BUCKET_NAME: crypto-alert-serverless-gcf-source
   GCS_LOCATION: us-east1
-  TF_VAR_region: europe-west1
+  TF_VAR_region: southamerica-east1
 
 jobs:
   build:
