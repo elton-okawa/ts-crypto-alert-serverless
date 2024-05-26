@@ -4,31 +4,44 @@ import {
   PercentageNotification,
   Period,
 } from '@src/domain';
-import { Bold, percentage, Regular } from '@src/lib';
+import { Bold, percentage, Regular, toMapArray } from '@src/lib';
+
+type FormatOptions = {
+  colorize?: boolean;
+};
 
 export class DiscordMessageFormatter implements INotificationFormatter {
   format(notification: Notification): string {
     return [
+      ...this.percentages(notification.percentages),
       '```ansi',
-      ...this.formatPercentages(notification.percentages),
+      ...this.colorizePercentages(notification.percentages),
       '```',
     ].join('\n');
   }
 
-  private formatPercentages(percentages: PercentageNotification[]): string[] {
+  private percentages(percentages: PercentageNotification[]): string[] {
+    if (percentages.length <= 0) return [];
+    const grouped = toMapArray(percentages, 'period');
+
+    return [
+      'Percentage:',
+      ...Object.entries(grouped).flatMap(([period, notifications]) => {
+        return [
+          `  ${period}:`,
+          ...notifications.map(
+            (percentage) =>
+              `    ${this.formatPercentage(percentage, { colorize: false })}`,
+          ),
+        ];
+      }),
+    ];
+  }
+
+  private colorizePercentages(percentages: PercentageNotification[]): string[] {
     if (percentages.length <= 0) return [];
 
-    const grouped = percentages.reduce(
-      (group, current) => {
-        if (!(current.period in group)) {
-          group[current.period] = [];
-        }
-        group[current.period].push(current);
-
-        return group;
-      },
-      {} as Record<Period, PercentageNotification[]>,
-    );
+    const grouped = toMapArray(percentages, 'period');
 
     return [
       `${Bold.Blue}=========== Percentage ===========`,
@@ -40,16 +53,19 @@ export class DiscordMessageFormatter implements INotificationFormatter {
         return [
           `${Regular.Cyan}${period}:`,
           ...grouped[period].map((percentage) =>
-            this.formatPercentage(percentage),
+            this.formatPercentage(percentage, { colorize: true }),
           ),
         ];
       }),
     ];
   }
 
-  private formatPercentage(notification: PercentageNotification): string {
+  private formatPercentage(
+    notification: PercentageNotification,
+    options: FormatOptions = {},
+  ): string {
     const color = this.getColor(notification.difference);
-    return `${color}${percentage(notification.difference)} ${notification.symbol.padEnd(4)}: ${notification.targetPrice.format()} -> ${notification.currentPrice.format()}`;
+    return `${options.colorize ? color : ''}${percentage(notification.difference)} ${notification.symbol.padEnd(4)}: ${notification.targetPrice.format()} -> ${notification.currentPrice.format()}`;
   }
 
   private getColor(difference: number): string {
