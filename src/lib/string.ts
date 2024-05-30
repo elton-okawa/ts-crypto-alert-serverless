@@ -1,5 +1,12 @@
 export function dollar(value: number): string {
-  return `$${value.toFixed(2)}`;
+  if (value > 1) {
+    return `$${value.toFixed(2)}`;
+  } else {
+    const decimal = value.toString().split('.')[1];
+    const index = decimal.search(/[1-9]/);
+
+    return `${value.toFixed(index + 3)}`;
+  }
 }
 
 export function percentage(value: number): string {
