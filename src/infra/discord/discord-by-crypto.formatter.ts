@@ -7,7 +7,12 @@ import {
 } from '@src/domain';
 import { percentage, toMap, toMapArray } from '@src/lib';
 
-const PERIOD_COLUMNS = [Period.HOURS_3, Period.DAILY, Period.WEEKLY];
+const PERIOD_COLUMNS = [
+  Period.DAILY,
+  Period.WEEKLY,
+  Period.MONTHLY,
+  Period.YEARLY,
+];
 
 const PAD_STRING = ' ';
 const COLUMN_LENGTH = 8;
@@ -34,12 +39,14 @@ export class DiscordByCryptoFormatter implements INotificationFormatter {
     const header = [...PERIOD_COLUMNS.map(PeriodHelper.toReadable), 'Name'];
 
     const data = Object.entries(percentages).map(([symbol, map]) => [
-      ...PERIOD_COLUMNS.map((period) =>
-        percentage(map[period].difference, {
+      ...PERIOD_COLUMNS.map((period) => {
+        if (!(period in map)) return '-';
+
+        return percentage(map[period].difference, {
           decimalPlaces: 1,
           includeSymbol: false,
-        }),
-      ),
+        });
+      }),
       symbol,
     ]);
 
