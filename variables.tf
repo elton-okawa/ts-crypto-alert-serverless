@@ -38,3 +38,19 @@ variable "binance_api_url" {
   description = "Binance API URL"
   type = string
 }
+
+// Secrets - ideally should be secrets but Secret Manager does not have free tier
+variable "database_url" {
+  description = "MongoDB Database URL"
+  type = string
+}
+
+variable "discord_bot_token" {
+  description = "Discord bot token"
+  type = string
+}
+
+variable "discord_channel_id" {
+  description = "Discord channel ID"
+  type = string
+}

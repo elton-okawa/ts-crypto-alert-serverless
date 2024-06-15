@@ -47,28 +47,10 @@ resource "google_cloudfunctions2_function" "function" {
     timeout_seconds     = 60
     environment_variables = {
       BINANCE_API_URL = var.binance_api_url
-      DATABASE_NAME = "crypto-alert"
-    }
-
-    secret_environment_variables {
-      key = "DATABASE_URL"
-      secret = "DATABASE_URL"
-      version = "latest"
-      project_id = var.project_id
-    }
-
-    secret_environment_variables {
-      key = "DISCORD_BOT_TOKEN"
-      secret = "DISCORD_BOT_TOKEN"
-      version = "latest"
-      project_id = var.project_id
-    }
-
-    secret_environment_variables {
-      key = "DISCORD_CHANNEL_ID"
-      secret = "DISCORD_CHANNEL_ID"
-      version = "latest"
-      project_id = var.project_id
+      DATABASE_NAME = "crypto-alert",
+      DATABASE_URL = var.database_url,
+      DISCORD_BOT_TOKEN = var.discord_bot_token,
+      DISCORD_CHANNEL_ID = var.discord_channel_id,
     }
   }
 }
