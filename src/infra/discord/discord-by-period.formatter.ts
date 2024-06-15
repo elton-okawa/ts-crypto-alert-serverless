@@ -10,13 +10,16 @@ type FormatOptions = {
   colorize?: boolean;
 };
 
-export class DiscordMessageFormatter implements INotificationFormatter {
+export class DiscordByPeriodFormatter implements INotificationFormatter {
   format(notification: Notification): string {
+    const percentages = notification.triggeredPercentages;
     return [
-      ...this.percentages(notification.percentages),
-      '```ansi',
-      ...this.colorizePercentages(notification.percentages),
-      '```',
+      ...this.percentages(percentages),
+
+      // Colored part does not work in mobile and message has limit of 2k characters
+      // '```ansi',
+      // ...this.colorizePercentages(percentages),
+      // '```',
     ].join('\n');
   }
 

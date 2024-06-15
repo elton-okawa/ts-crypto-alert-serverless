@@ -6,6 +6,7 @@ import {
   IUseCase,
   INotifier,
   IPercentageAlertUseCase,
+  Cryptocurrency,
 } from '@src/domain';
 import { Logger } from '@src/logger';
 
@@ -27,7 +28,35 @@ export class SendAlertUseCase implements IUseCase<void, void> {
     ]);
 
     const alertConfigMap = toMap(alertConfigs, 'symbol');
-    const percentageNotifications = (
+    const percentageNotifications = await this.calculatePercentageNotifications(
+      cryptocurrencies,
+      alertConfigMap,
+    );
+
+    await this.repository.saveCryptocurrencies(cryptocurrencies);
+
+    const notification = Notification.create({
+      percentages: percentageNotifications,
+    });
+    if (!notification.hasTriggeredNotifications()) {
+      this.logger.log('There is no notifications to send');
+      return;
+    }
+
+    await this.notifier.send(notification);
+
+    this.logger.log('Finished use case!');
+  }
+
+  private alertFor(symbol: string, alertMap: Record<string, Alert>): Alert {
+    return alertMap[symbol] ?? alertMap['default'];
+  }
+
+  private async calculatePercentageNotifications(
+    cryptocurrencies: Cryptocurrency[],
+    alertConfigMap: Record<string, Alert>,
+  ) {
+    return (
       await Promise.all(
         cryptocurrencies.map(async (crypto) => {
           const alert = this.alertFor(crypto.symbol, alertConfigMap);
@@ -44,23 +73,5 @@ export class SendAlertUseCase implements IUseCase<void, void> {
         }),
       )
     ).flat();
-
-    await this.repository.saveCryptocurrencies(cryptocurrencies);
-
-    const notification = Notification.create({
-      percentages: percentageNotifications,
-    });
-    if (!notification.hasNotifications()) {
-      this.logger.log('There is no notifications to send');
-      return;
-    }
-
-    await this.notifier.send(notification);
-
-    this.logger.log('Finished use case!');
-  }
-
-  private alertFor(symbol: string, alertMap: Record<string, Alert>): Alert {
-    return alertMap[symbol] ?? alertMap['default'];
   }
 }

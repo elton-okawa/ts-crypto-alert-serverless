@@ -9,8 +9,20 @@ export function dollar(value: number): string {
   }
 }
 
-export function percentage(value: number): string {
+export type PercentageOptions = {
+  decimalPlaces?: number;
+  includeSymbol?: boolean;
+};
+
+export function percentage(
+  value: number,
+  options: PercentageOptions = {},
+): string {
+  const decimalPlaces = options.decimalPlaces ?? 2;
+  const includeSymbol = options.includeSymbol ?? true;
+
   const percentage = Math.abs(value * 100);
   const signal = value > 0 ? '+' : '-';
-  return `%${signal}${percentage.toFixed(2)}`;
+  const symbol = includeSymbol ? '%' : '';
+  return `${symbol}${signal}${percentage.toFixed(decimalPlaces)}`;
 }

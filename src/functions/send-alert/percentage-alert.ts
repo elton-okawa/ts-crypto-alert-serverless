@@ -57,13 +57,6 @@ export class PercentageAlertUseCase implements IPercentageAlertUseCase {
       `Getting notification for '${cryptocurrency.symbol}' in '${config.period}'...`,
     );
 
-    if (!cryptocurrency.canPercentageAlert(config.period, config.cooldown)) {
-      this.logger.debug(
-        `Notification for '${cryptocurrency.symbol}' '${config.period}' in cooldown!`,
-      );
-      return null;
-    }
-
     const lastPeriodPrice = await this.repository.mostRecentPrice(
       cryptocurrency.symbol,
       PeriodHelper.getDate(config.period, lastPrice.createdAt),
@@ -80,23 +73,20 @@ export class PercentageAlertUseCase implements IPercentageAlertUseCase {
     );
 
     const percentageDiff = lastPrice.percentageDifference(lastPeriodPrice);
-    if (config.triggered(percentageDiff)) {
-      this.logger.debug(
-        `Notification for '${cryptocurrency.symbol}' '${config.period}' triggered!`,
-      );
 
-      return PercentageNotification.create({
-        symbol: cryptocurrency.symbol,
-        currentPrice: lastPrice,
-        targetPrice: lastPeriodPrice,
-        period: config.period,
-        difference: percentageDiff,
-      });
-    }
-
+    const notification = PercentageNotification.create({
+      triggered: config.triggered(percentageDiff),
+      cooldown: cryptocurrency.isInCooldown(config.period, config.cooldown),
+      symbol: cryptocurrency.symbol,
+      currentPrice: lastPrice,
+      targetPrice: lastPeriodPrice,
+      period: config.period,
+      difference: percentageDiff,
+    });
     this.logger.debug(
-      `Notification for '${cryptocurrency.symbol}' '${config.period}' not triggered!`,
+      `'${cryptocurrency.symbol}' - (triggered: '${notification.triggered}', cooldown: '${notification.cooldown}')`,
     );
-    return null;
+
+    return notification;
   }
 }

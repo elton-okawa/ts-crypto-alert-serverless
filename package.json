@@ -7,7 +7,7 @@
   "license": "UNLICENSED",
   "main": "dist/index.js",
   "watch": {
-    "start:dev": {
+    "start": {
       "patterns": [
         "src"
       ],
@@ -16,8 +16,8 @@
   },
   "scripts": {
     "build": "rimraf dist && tsc && resolve-tspaths",
-    "watch:dev": "npm-watch start:dev",
-    "start:dev": "yarn build && functions-framework -r tsconfig-paths/register --target=index --source=dist/index.js",
+    "start:dev": "npm-watch start",
+    "start": "yarn build && functions-framework -r tsconfig-paths/register --target=index --source=dist/index.js",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "test": "jest",

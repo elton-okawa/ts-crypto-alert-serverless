@@ -9,8 +9,6 @@ env:
   PROJECT_ID: crypto-alert-421018
   BUCKET_NAME: crypto-alert-serverless-gcf-source
   GCS_LOCATION: us-east1
-  TF_VAR_region: us-east1
-  TF_VAR_binance_api_url: https://data-api.binance.vision
 
 jobs:
   build:
@@ -102,6 +100,11 @@ jobs:
     env:
       TF_TOKEN_app_terraform_io: ${{ secrets.TF_API_TOKEN }}
       TF_VAR_source_filepath: ${{ needs.upload.outputs.source_path }}
+      TF_VAR_region: us-east1
+      TF_VAR_binance_api_url: https://data-api.binance.vision
+      TF_VAR_database_url: ${{ secrets.DATABASE_URL }}
+      TF_VAR_discord_bot_token: ${{ secrets.DISCORD_BOT_TOKEN }}
+      TF_VAR_discord_channel_id: ${{ secrets.DISCORD_CHANNEL_ID }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4

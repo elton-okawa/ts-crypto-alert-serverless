@@ -27,6 +27,10 @@ export const PeriodHelper = {
   getDate(period: Period, reference: Date): Date {
     return periodToDate[period](reference);
   },
+
+  toReadable(period: Period): string {
+    return periodToReadable[period];
+  },
 };
 
 const hoursCompose = (amount: number) =>
@@ -43,4 +47,17 @@ const periodToDate: Record<Period, (ref: Date) => Date> = {
   [Period.QUARTERLY]: compose(subMonths(3)),
   [Period.SEMI_ANNUAL]: compose(subMonths(6)),
   [Period.YEARLY]: compose(subYears(1)),
+};
+
+const periodToReadable: Record<Period, string> = {
+  [Period.HOURLY]: '1h',
+  [Period.HOURS_3]: '3h',
+  [Period.HOURS_6]: '6h',
+  [Period.HOURS_12]: '12h',
+  [Period.DAILY]: '1d',
+  [Period.WEEKLY]: '1w',
+  [Period.MONTHLY]: '1m',
+  [Period.QUARTERLY]: '3m',
+  [Period.SEMI_ANNUAL]: '6m',
+  [Period.YEARLY]: '1y',
 };
