@@ -38,7 +38,7 @@ export class SendAlertUseCase implements IUseCase<void, void> {
     const notification = Notification.create({
       percentages: percentageNotifications,
     });
-    if (!notification.hasNotifications()) {
+    if (!notification.hasTriggeredNotifications()) {
       this.logger.log('There is no notifications to send');
       return;
     }

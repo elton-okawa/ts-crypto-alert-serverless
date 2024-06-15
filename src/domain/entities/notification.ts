@@ -24,6 +24,13 @@ export class Notification extends ValueObject {
       ).length > 0
     );
   }
+
+  hasTriggeredNotifications(): boolean {
+    return (
+      this.percentages.filter((notification) => notification.triggered).length >
+      0
+    );
+  }
 }
 
 class BaseNotification extends ValueObject {

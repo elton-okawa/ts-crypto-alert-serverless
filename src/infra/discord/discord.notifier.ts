@@ -1,10 +1,9 @@
-import { INotifier, Notification } from '@src/domain';
+import { INotificationFormatter, INotifier, Notification } from '@src/domain';
 import { DiscordService } from './discord.service';
-import { DiscordByPeriodFormatter } from './discord-by-period.formatter';
 
 export class DiscordNotifier implements INotifier {
   constructor(
-    private formatter: DiscordByPeriodFormatter,
+    private formatter: INotificationFormatter,
     private discord: DiscordService,
   ) {}
 
