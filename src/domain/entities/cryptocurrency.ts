@@ -26,13 +26,13 @@ export class Cryptocurrency extends Entity {
     this.lastAlerts = params.lastAlerts ?? {};
   }
 
-  canPercentageAlert(period: Period, cooldown: Cooldown): boolean {
+  isInCooldown(period: Period, cooldown: Cooldown): boolean {
     const lastExecution = this.lastAlerts?.percentage?.[period];
-    if (!lastExecution) return true;
+    if (!lastExecution) return false;
 
     return (
-      lastExecution.getTime() + cooldown.milliseconds - COOLDOWN_DELTA_MS <=
-      Date.now()
+      Date.now() <=
+      lastExecution.getTime() + cooldown.milliseconds - COOLDOWN_DELTA_MS
     );
   }
 

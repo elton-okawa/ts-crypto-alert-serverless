@@ -6,6 +6,7 @@ import {
   IUseCase,
   INotifier,
   IPercentageAlertUseCase,
+  Cryptocurrency,
 } from '@src/domain';
 import { Logger } from '@src/logger';
 
@@ -27,23 +28,10 @@ export class SendAlertUseCase implements IUseCase<void, void> {
     ]);
 
     const alertConfigMap = toMap(alertConfigs, 'symbol');
-    const percentageNotifications = (
-      await Promise.all(
-        cryptocurrencies.map(async (crypto) => {
-          const alert = this.alertFor(crypto.symbol, alertConfigMap);
-          const percentageNotifications = await this.percentageAlert.execute({
-            cryptocurrency: crypto,
-            configs: alert.percentages,
-          });
-
-          percentageNotifications.forEach((percentage) =>
-            crypto.percentageAlertSent(percentage.period),
-          );
-
-          return percentageNotifications;
-        }),
-      )
-    ).flat();
+    const percentageNotifications = await this.calculatePercentageNotifications(
+      cryptocurrencies,
+      alertConfigMap,
+    );
 
     await this.repository.saveCryptocurrencies(cryptocurrencies);
 
@@ -62,5 +50,28 @@ export class SendAlertUseCase implements IUseCase<void, void> {
 
   private alertFor(symbol: string, alertMap: Record<string, Alert>): Alert {
     return alertMap[symbol] ?? alertMap['default'];
+  }
+
+  private async calculatePercentageNotifications(
+    cryptocurrencies: Cryptocurrency[],
+    alertConfigMap: Record<string, Alert>,
+  ) {
+    return (
+      await Promise.all(
+        cryptocurrencies.map(async (crypto) => {
+          const alert = this.alertFor(crypto.symbol, alertConfigMap);
+          const percentageNotifications = await this.percentageAlert.execute({
+            cryptocurrency: crypto,
+            configs: alert.percentages,
+          });
+
+          percentageNotifications.forEach((percentage) =>
+            crypto.percentageAlertSent(percentage.period),
+          );
+
+          return percentageNotifications;
+        }),
+      )
+    ).flat();
   }
 }
