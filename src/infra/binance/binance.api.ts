@@ -1,6 +1,8 @@
 import {
+  CryptoKline,
   CryptoPrice,
   GetHistoricalPriceParams,
+  GetKlineParams,
   GetPricesParams,
   ICryptoAPI,
 } from '@src/domain';
@@ -14,7 +16,35 @@ export class BinanceAPI implements ICryptoAPI {
 
   constructor(private config: BinanceApiConfig) {}
 
-  url(endpoint: string) {
+  async getKLines(params: GetKlineParams): Promise<CryptoKline[]> {
+    this.logger.log('Fetching klines...');
+
+    const { data } = await axios.get<Kline[]>(this.url('/api/v3/klines'), {
+      params,
+    });
+
+    const result = data.map((d) => {
+      return CryptoKline.create({
+        openTime: new Date(d[0]),
+        openPrice: parseFloat(d[1]),
+        highPrice: parseFloat(d[2]),
+        lowPrice: parseFloat(d[3]),
+        closePrice: parseFloat(d[4]),
+        volume: parseFloat(d[5]),
+        closeTime: new Date(d[6]),
+        quoteAssetVolume: parseFloat(d[7]),
+        trades: d[8],
+        takerBuyBase: parseFloat(d[9]),
+        takerBuyQuote: parseFloat(d[10]),
+      });
+    });
+
+    this.logger.log('Klines fetched successfully');
+
+    return result;
+  }
+
+  private url(endpoint: string) {
     return `${this.config.url}${endpoint}`;
   }
 
