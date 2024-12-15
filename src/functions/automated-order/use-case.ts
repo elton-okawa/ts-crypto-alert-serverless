@@ -23,7 +23,7 @@ export class AutomatedOrderUseCase implements IUseCase<void, void> {
 
     const score = klines.reduce((curr, kline, index) => {
       const klineScore =
-        kline.priceScore * 5 + kline.lowPriceScore + kline.highPriceScore;
+        kline.priceScore * 5 + kline.lowScore + kline.highScore;
       return curr + Math.pow(klineScore * ((index + 1) / AMOUNT_KLINES), 3);
     }, 0);
 

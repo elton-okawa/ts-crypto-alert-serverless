@@ -1,33 +1,17 @@
 import { CryptoKline, ICryptoAPI, Interval, IUseCase } from '@src/domain';
 import { Logger } from '@src/logger';
 import { writeFileSync } from 'fs';
+import { DecisionResult } from './decision-result';
+import { ThresholdConfig } from './types';
 
 type Params = {
-  thresholds: {
-    price: Threshold;
-    low: Threshold;
-    high: Threshold;
-  };
+  thresholds: ThresholdConfig;
   window: number;
   symbol: string;
 };
 
-type DecisionResult = {
-  decision: Decision;
-  time: Date;
-  price: number;
-  scores: {
-    price: number;
-    high: number;
-    low: number;
-  };
-};
-
-enum Decision {
-  HOLD = 'HOLD',
-  BUY = 'BUY',
-  SELL = 'SELL',
-}
+const AMOUNT = 7 * 24;
+const CSV_SEPARATOR = ',';
 
 // TODO not sure about threshold min and max
 // maybe calculate for each kline instead of aggregating results
@@ -41,12 +25,12 @@ export class AutomatedOrderParametersUseCase implements IUseCase<Params, void> {
     const klines = await this.api.getKLines({
       symbol: params.symbol,
       interval: Interval.OneHour,
-      limit: 1000, // max is 1k
+      limit: AMOUNT, // max is 1k
     });
 
     const slidingWindow = this.getSlidingWindow(klines, params.window);
-    const results = slidingWindow.map((window) =>
-      this.getDecision(window, params.window, params.thresholds),
+    const results = slidingWindow.map(
+      (window) => new DecisionResult(window, params.thresholds),
     );
 
     this.writeKlineFile(klines, './klines.csv');
@@ -66,7 +50,7 @@ export class AutomatedOrderParametersUseCase implements IUseCase<Params, void> {
             kline.openPrice,
             kline.closePrice,
             kline.lowPrice,
-          ].join(';'),
+          ].join(CSV_SEPARATOR),
         )
         .join('\n'),
     );
@@ -75,19 +59,9 @@ export class AutomatedOrderParametersUseCase implements IUseCase<Params, void> {
   private writeResultFile(decisions: DecisionResult[], filename: string) {
     writeFileSync(
       filename,
-      [
-        'Time;Price;Price Score;Low Score;High Score;Decision',
-        ...decisions.map((res) =>
-          [
-            res.time.toISOString(),
-            res.price,
-            res.scores.price,
-            res.scores.low,
-            res.scores.high,
-            res.decision,
-          ].join(';'),
-        ),
-      ].join('\n'),
+      [DecisionResult.csvHeader, ...decisions.map((d) => d.toCsvRow())].join(
+        '\n',
+      ),
     );
   }
 
@@ -104,54 +78,4 @@ export class AutomatedOrderParametersUseCase implements IUseCase<Params, void> {
 
     return slidingWindow;
   }
-
-  private getDecision(
-    klines: CryptoKline[],
-    window: number,
-    thresholds: { price: Threshold; high: Threshold; low: Threshold },
-  ): DecisionResult {
-    const scores = klines.reduce(
-      (curr, kline, index) => {
-        curr.price += kline.priceScore * Math.pow((index + 1) / window, 3);
-        curr.high += kline.highPriceScore * Math.pow((index + 1) / window, 3);
-        curr.low += kline.lowPriceScore * Math.pow((index + 1) / window, 3);
-
-        return curr;
-      },
-      { price: 0, high: 0, low: 0 },
-    );
-
-    const finalScore =
-      this.getScoreResult(scores.price, thresholds.price) +
-      this.getScoreResult(scores.high, thresholds.high) +
-      this.getScoreResult(scores.low, thresholds.low);
-
-    let decision = Decision.HOLD;
-    if (finalScore > 0) {
-      decision = Decision.BUY;
-    } else if (finalScore < 0) {
-      decision = Decision.SELL;
-    }
-
-    const currentKline = klines[klines.length - 1];
-
-    return {
-      decision,
-      scores,
-      time: currentKline.closeTime,
-      price: currentKline.closePrice,
-    };
-  }
-
-  private getScoreResult(value: number, threshold: Threshold) {
-    const abs = Math.abs(value);
-    if (abs >= threshold.min && abs <= threshold.max) return 0;
-    else if (abs < threshold.min) return -1;
-    else return 1;
-  }
 }
-
-type Threshold = {
-  min: number;
-  max: number;
-};

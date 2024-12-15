@@ -38,25 +38,25 @@ export class CryptoKline extends Entity {
 
   /**
    * How close it was to lose value
-   * [-1, 0] Always negative, lower is better (in absolute terms)
+   * [-1, 0] Always negative, lower is better
    *
    * Measure momentum:
    * - when lowPrice ~= openPrice -> momentum is high, people are buying
    * - when lowPrice < openPrice -> momentum is uncertain, some are buying, some are selling
    */
-  get lowPriceScore() {
+  get lowScore() {
     return (this.lowPrice - this.openPrice) / this.openPrice;
   }
 
   /**
    * How much near the value closed at the highest point
-   * [0, 1] Always positive, higher is better
+   * [0, 1] Always positive, lower is better
    *
    * Measure momentum:
    * - when highPrice ~= closePrice -> momentum is high, people are buying
    * - when highPrice > closePrice -> momentum is uncertain, some are buying, some are selling
    */
-  get highPriceScore() {
-    return 1 - (this.highPrice - this.closePrice) / this.closePrice;
+  get highScore() {
+    return (this.highPrice - this.closePrice) / this.closePrice;
   }
 }
