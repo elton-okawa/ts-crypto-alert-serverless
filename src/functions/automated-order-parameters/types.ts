@@ -24,7 +24,7 @@ export type Threshold = {
 
 export type ThresholdConfig = Record<Field, FieldThreshold>;
 
-export type FieldThreshold = Record<Parameter, Threshold> & {
+export type FieldThreshold = Threshold & {
   invert?: boolean;
 };
 

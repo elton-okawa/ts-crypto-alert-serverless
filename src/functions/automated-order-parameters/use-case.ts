@@ -28,9 +28,8 @@ export class AutomatedOrderParametersUseCase implements IUseCase<Params, void> {
       limit: AMOUNT, // max is 1k
     });
 
-    const slidingWindow = this.getSlidingWindow(klines, params.window);
-    const results = slidingWindow.map(
-      (window) => new DecisionResult(window, params.thresholds),
+    const results = klines.map(
+      (kline) => new DecisionResult(kline, params.thresholds),
     );
 
     this.writeKlineFile(klines, './klines.csv');
@@ -65,7 +64,10 @@ export class AutomatedOrderParametersUseCase implements IUseCase<Params, void> {
     );
   }
 
-  private getSlidingWindow(klines: CryptoKline[], size: number) {
+  private getSlidingWindow(
+    klines: CryptoKline[],
+    size: number,
+  ): CryptoKline[][] {
     const window = [];
     const slidingWindow = [];
     for (const kline of klines) {
