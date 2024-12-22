@@ -1,6 +1,7 @@
 import { Entity } from '@src/domain/core';
 import Decimal from 'decimal.js';
 import { Transaction } from './transaction.entity';
+import { TransactionType } from './types';
 
 type WalletParams = Entity & {
   code: string;
@@ -32,6 +33,7 @@ export class Wallet extends Entity {
       code: this.code,
       amount: new Decimal(amount),
       balance: this.amount,
+      type: TransactionType.WITHDRAW,
     });
     const totalPrice = this.meanPrice.times(this.amount);
     const withdrawPrice = this.meanPrice.times(amount);
@@ -52,6 +54,7 @@ export class Wallet extends Entity {
       code: this.code,
       amount: new Decimal(amount),
       balance: this.amount,
+      type: TransactionType.DEPOSIT,
     });
 
     const totalPrice = this.meanPrice.times(this.amount);
