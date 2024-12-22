@@ -1,8 +1,10 @@
-import { CryptoKline, ICryptoAPI, Interval, IUseCase } from '@src/domain';
+import { ICryptoAPI, Interval, IUseCase } from '@src/domain';
 import { Logger } from '@src/logger';
 import { writeFileSync } from 'fs';
 import { CsvDecisionResult } from './csv-decision-result';
-import { Decision, ThresholdConfig } from '@src/domain';
+import { CryptoKline } from './crypto-kline.vo';
+import { ThresholdConfig } from './types';
+import { AutomatedDecision } from './automated-decision.entity';
 
 type Params = {
   thresholds: ThresholdConfig;
@@ -28,7 +30,7 @@ export class AutomatedOrderParametersUseCase implements IUseCase<Params, void> {
     });
 
     const results = klines.map((kline) => {
-      const decision = Decision.createFrom(kline, params.thresholds);
+      const decision = AutomatedDecision.createFrom(kline, params.thresholds);
       return new CsvDecisionResult(decision);
     });
 

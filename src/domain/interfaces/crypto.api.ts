@@ -1,4 +1,5 @@
-import { CryptoPrice, CryptoKline } from '@src/domain/entities';
+import { CryptoKline } from '@src/automated-order';
+import { CryptoPrice } from '@src/domain/entities';
 
 export interface ICryptoAPI {
   getPrices(params: GetPricesParams): Promise<CryptoPrice[]>;

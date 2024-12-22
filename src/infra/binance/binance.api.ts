@@ -1,5 +1,4 @@
 import {
-  CryptoKline,
   CryptoPrice,
   GetHistoricalPriceParams,
   GetKlineParams,
@@ -10,6 +9,7 @@ import { BinanceApiConfig } from './binance.config';
 import { Logger } from '@src/logger';
 
 import axios from 'axios';
+import { CryptoKline } from '@src/automated-order/crypto-kline.vo';
 
 export class BinanceAPI implements ICryptoAPI {
   private readonly logger = new Logger(BinanceAPI.name);
@@ -26,16 +26,16 @@ export class BinanceAPI implements ICryptoAPI {
     const result = data.map((d) => {
       return CryptoKline.create({
         openTime: new Date(d[0]),
-        openPrice: parseFloat(d[1]),
-        highPrice: parseFloat(d[2]),
-        lowPrice: parseFloat(d[3]),
-        closePrice: parseFloat(d[4]),
-        volume: parseFloat(d[5]),
+        openPrice: d[1],
+        highPrice: d[2],
+        lowPrice: d[3],
+        closePrice: d[4],
+        volume: d[5],
         closeTime: new Date(d[6]),
-        quoteAssetVolume: parseFloat(d[7]),
+        quoteAssetVolume: d[7],
         trades: d[8],
-        takerBuyBase: parseFloat(d[9]),
-        takerBuyQuote: parseFloat(d[10]),
+        takerBuyBase: d[9],
+        takerBuyQuote: d[10],
       });
     });
 

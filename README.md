@@ -1,5 +1,12 @@
 # Crypto Alert
 
+## Automated Purchase
+
+Idea:
+
+- when highScore stabilize, sell because market does not tend to increase value
+- when lowScore stabilize, buy because market does not tend to decrease value
+
 ## Takeaways
 
 Authenticating Terraform Cloud on GCP needs a `GOOGLE_SERVICE_ACCOUNT` as environment variable configured there
