@@ -1,20 +1,19 @@
 import { CryptoKline, ICryptoAPI, Interval, IUseCase } from '@src/domain';
 import { Logger } from '@src/logger';
 import { writeFileSync } from 'fs';
-import { DecisionResult } from './decision-result';
-import { ThresholdConfig } from './types';
+import { CsvDecisionResult } from './csv-decision-result';
+import { Decision, ThresholdConfig } from '@src/domain';
 
 type Params = {
   thresholds: ThresholdConfig;
   window: number;
   symbol: string;
+  amount: number; // max is 1k
+  interval: Interval;
 };
 
-const AMOUNT = 7 * 24;
 const CSV_SEPARATOR = ',';
 
-// TODO not sure about threshold min and max
-// maybe calculate for each kline instead of aggregating results
 export class AutomatedOrderParametersUseCase implements IUseCase<Params, void> {
   private readonly logger = new Logger(AutomatedOrderParametersUseCase.name);
 
@@ -24,13 +23,14 @@ export class AutomatedOrderParametersUseCase implements IUseCase<Params, void> {
 
     const klines = await this.api.getKLines({
       symbol: params.symbol,
-      interval: Interval.OneHour,
-      limit: AMOUNT, // max is 1k
+      interval: params.interval,
+      limit: params.amount,
     });
 
-    const results = klines.map(
-      (kline) => new DecisionResult(kline, params.thresholds),
-    );
+    const results = klines.map((kline) => {
+      const decision = Decision.createFrom(kline, params.thresholds);
+      return new CsvDecisionResult(decision);
+    });
 
     this.writeKlineFile(klines, './klines.csv');
     this.writeResultFile(results, './decisions.csv');
@@ -55,29 +55,12 @@ export class AutomatedOrderParametersUseCase implements IUseCase<Params, void> {
     );
   }
 
-  private writeResultFile(decisions: DecisionResult[], filename: string) {
+  private writeResultFile(decisions: CsvDecisionResult[], filename: string) {
     writeFileSync(
       filename,
-      [DecisionResult.csvHeader, ...decisions.map((d) => d.toCsvRow())].join(
+      [CsvDecisionResult.csvHeader, ...decisions.map((d) => d.toCsvRow())].join(
         '\n',
       ),
     );
-  }
-
-  private getSlidingWindow(
-    klines: CryptoKline[],
-    size: number,
-  ): CryptoKline[][] {
-    const window = [];
-    const slidingWindow = [];
-    for (const kline of klines) {
-      window.push(kline);
-      if (window.length === size - 1) {
-        slidingWindow.push([...window]);
-        window.splice(0, 1);
-      }
-    }
-
-    return slidingWindow;
   }
 }

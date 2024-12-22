@@ -1,6 +1,6 @@
-import { Entity } from '@src/domain/core';
+import { ValueObject } from '../core';
 
-export class CryptoKline extends Entity {
+export class CryptoKline extends ValueObject {
   openTime: Date;
   closeTime: Date;
   openPrice: number;
@@ -14,7 +14,7 @@ export class CryptoKline extends Entity {
   takerBuyQuote: number;
 
   constructor(params: Partial<CryptoKline>) {
-    super(params);
+    super();
 
     this.openTime = params.openTime;
     this.closeTime = params.closeTime;

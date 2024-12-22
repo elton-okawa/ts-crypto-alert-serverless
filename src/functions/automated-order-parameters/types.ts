@@ -1,34 +1,10 @@
-export type Decision = {
-  value: number;
-  decision: number;
-};
-
-export enum DecisionName {
+export enum ActionType {
   HOLD = 'HOLD',
   BUY = 'BUY',
   SELL = 'SELL',
 }
 
-export enum DecisionAction {
+export enum ActionEnabler {
   PERFORM = 'PERFORM',
   SKIP = 'SKIP',
 }
-
-export type Field = 'price' | 'high' | 'low';
-export type Parameter = 'slope' | 'score';
-
-export type Threshold = {
-  min: number;
-  max: number;
-};
-
-export type ThresholdConfig = Record<Field, FieldThreshold>;
-
-export type FieldThreshold = Threshold & {
-  invert?: boolean;
-};
-
-export type Point = {
-  x: number;
-  y: number;
-};
