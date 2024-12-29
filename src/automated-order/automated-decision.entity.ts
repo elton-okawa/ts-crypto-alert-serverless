@@ -22,6 +22,10 @@ export class AutomatedDecision extends Entity {
     return this.finalAction === ScoreAction.BUY;
   }
 
+  public get sell() {
+    return this.finalAction === ScoreAction.SELL;
+  }
+
   public constructor(params: Partial<AutomatedDecision>) {
     super(params);
 

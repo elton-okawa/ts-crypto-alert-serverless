@@ -16,7 +16,7 @@ export class AutomatedOrderUseCase implements IUseCase<void, void> {
     this.logger.log('Starting use case...');
 
     const code = 'BTC';
-    const pair = 'USDT';
+    const pair = 'USDC';
     const symbol = `${code}${pair}`;
 
     const [config, savedWallet] = await Promise.all([
@@ -32,8 +32,8 @@ export class AutomatedOrderUseCase implements IUseCase<void, void> {
 
     const decision = AutomatedDecision.createFrom(kline, config.thresholds);
     decision.buy
-      ? wallet.deposit(wallet.amount)
-      : wallet.withdraw(wallet.amount);
+      ? wallet.deposit(decision.price, wallet.usdBalance)
+      : wallet.withdraw(wallet.cryptoBalance);
 
     await Promise.all([
       this._repository.saveDecision(decision),

@@ -4,8 +4,10 @@ import { TransactionType } from './types';
 
 type TransactionParams = Entity & {
   code: string;
-  balance: Decimal.Value;
+  usdtBalance: Decimal.Value;
+  cryptoBalance: Decimal.Value;
   amount: Decimal.Value;
+  price: Decimal.Value;
   date: Date;
   type: TransactionType;
 };
@@ -13,8 +15,10 @@ type TransactionParams = Entity & {
 export class Transaction extends Entity {
   public static TABLE = 'transactions';
   code: string;
-  balance: Decimal;
+  usdtBalance: Decimal;
+  cryptoBalance: Decimal;
   amount: Decimal;
+  price: Decimal;
   date: Date;
   type: TransactionType;
 
@@ -22,8 +26,10 @@ export class Transaction extends Entity {
     super(params);
 
     this.code = params.code;
-    this.balance = new Decimal(params.balance);
+    this.usdtBalance = new Decimal(params.usdtBalance);
+    this.cryptoBalance = new Decimal(params.cryptoBalance);
     this.amount = new Decimal(params.amount);
+    this.price = new Decimal(params.price);
     this.date = params.date ?? new Date();
     this.type = params.type;
   }

@@ -1,8 +1,16 @@
+import { Wallet } from '@src/wallet';
 import { AutomatedDecision } from './automated-decision.entity';
 import { Field, ActionType, ActionEnabler } from './types';
+import Decimal from 'decimal.js';
 
 export class CsvDecisionResult {
-  constructor(private _decision: AutomatedDecision) {}
+  constructor(
+    private _decision: AutomatedDecision,
+    private _walletSnapshot: {
+      usdBalance: Decimal;
+      cryptoBalance: Decimal;
+    },
+  ) {}
 
   public static get csvHeader(): string {
     return [
@@ -15,6 +23,8 @@ export class CsvDecisionResult {
       'High Score',
       'High Score Decision',
       'Final Decision',
+      'USD Balance',
+      'Crypto Balance',
     ].join(',');
   }
 
@@ -30,6 +40,8 @@ export class CsvDecisionResult {
         return [decision.value, this.enablerActionToString(decision.action)];
       }),
       this.scoreActionToString(this._decision.finalAction),
+      this._walletSnapshot.usdBalance,
+      this._walletSnapshot.cryptoBalance,
     ].join(',');
   }
 
