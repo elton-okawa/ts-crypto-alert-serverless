@@ -3,34 +3,37 @@ import Decimal from 'decimal.js';
 import { TransactionType } from './types';
 
 type TransactionParams = Entity & {
+  type: TransactionType;
   code: string;
-  usdtBalance: Decimal.Value;
+  date: Date;
+  usdBalance: Decimal.Value;
   cryptoBalance: Decimal.Value;
   amount: Decimal.Value;
   price: Decimal.Value;
-  date: Date;
-  type: TransactionType;
+  gainOrLoss: Decimal.Value;
 };
 
 export class Transaction extends Entity {
   public static TABLE = 'transactions';
+  type: TransactionType;
   code: string;
-  usdtBalance: Decimal;
+  date: Date;
+  usdBalance: Decimal;
   cryptoBalance: Decimal;
   amount: Decimal;
   price: Decimal;
-  date: Date;
-  type: TransactionType;
+  gainOrLoss: Decimal;
 
   constructor(params: Partial<TransactionParams>) {
     super(params);
 
+    this.type = params.type;
     this.code = params.code;
-    this.usdtBalance = new Decimal(params.usdtBalance);
+    this.date = params.date ?? new Date();
+    this.usdBalance = new Decimal(params.usdBalance);
     this.cryptoBalance = new Decimal(params.cryptoBalance);
     this.amount = new Decimal(params.amount);
     this.price = new Decimal(params.price);
-    this.date = params.date ?? new Date();
-    this.type = params.type;
+    this.gainOrLoss = new Decimal(params.gainOrLoss);
   }
 }

@@ -1,4 +1,3 @@
-import { Wallet } from '@src/wallet';
 import { AutomatedDecision } from './automated-decision.entity';
 import { Field, ActionType, ActionEnabler } from './types';
 import Decimal from 'decimal.js';
@@ -9,6 +8,8 @@ export class CsvDecisionResult {
     private _walletSnapshot: {
       usdBalance: Decimal;
       cryptoBalance: Decimal;
+      gainOrLoss: Decimal;
+      meanPrice: Decimal;
     },
   ) {}
 
@@ -23,8 +24,10 @@ export class CsvDecisionResult {
       'High Score',
       'High Score Decision',
       'Final Decision',
+      'Mean Price',
       'USD Balance',
       'Crypto Balance',
+      'Gain or Loss',
     ].join(',');
   }
 
@@ -40,8 +43,10 @@ export class CsvDecisionResult {
         return [decision.value, this.enablerActionToString(decision.action)];
       }),
       this.scoreActionToString(this._decision.finalAction),
+      this._walletSnapshot.meanPrice,
       this._walletSnapshot.usdBalance,
       this._walletSnapshot.cryptoBalance,
+      this._walletSnapshot.gainOrLoss,
     ].join(',');
   }
 

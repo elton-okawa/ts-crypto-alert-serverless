@@ -45,14 +45,16 @@ export class AutomatedOrderParametersUseCase implements IUseCase<Params, void> {
     const results = klines.map((kline) => {
       const decision = AutomatedDecision.createFrom(kline, params.thresholds);
       if (decision.buy && wallet.usdBalance) {
-        wallet.deposit(decision.price, wallet.usdBalance.div(2));
+        wallet.deposit(wallet.usdBalance.div(2), decision.price);
       } else if (decision.sell && wallet.hasCryptoBalance) {
-        wallet.withdraw(wallet.cryptoBalance.div(2));
+        wallet.withdraw(wallet.cryptoBalance.div(2), decision.price);
       }
 
       return new CsvDecisionResult(decision, {
         usdBalance: wallet.usdBalance,
         cryptoBalance: wallet.cryptoBalance,
+        gainOrLoss: wallet.gainOrLoss,
+        meanPrice: wallet.meanPrice,
       });
     });
 

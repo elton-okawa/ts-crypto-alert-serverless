@@ -32,8 +32,8 @@ export class AutomatedOrderUseCase implements IUseCase<void, void> {
 
     const decision = AutomatedDecision.createFrom(kline, config.thresholds);
     decision.buy
-      ? wallet.deposit(decision.price, wallet.usdBalance)
-      : wallet.withdraw(wallet.cryptoBalance);
+      ? wallet.deposit(wallet.usdBalance, decision.price)
+      : wallet.withdraw(wallet.cryptoBalance, decision.price);
 
     await Promise.all([
       this._repository.saveDecision(decision),
