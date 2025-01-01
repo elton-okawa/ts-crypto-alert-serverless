@@ -1,5 +1,21 @@
 # Crypto Alert
 
+## Automated Purchase
+
+ON HOLD:
+
+- It's difficult to come up with a fixed rule to drive decision
+- Next step is to train a python model to predict future prices
+  - https://www.youtube.com/watch?v=CbTU92pbDKw
+  - https://ojs.revistadelos.com/ojs/index.php/delos/article/view/2602/1580
+  - https://www.datacamp.com/tutorial/lstm-python-stock-markethttps://www.analyticsvidhya.com/blog/2021/12/stock-price-prediction-using-lstm/
+  - https://www.kaggle.com/code/meetnagadia/bitcoin-price-prediction-using-lstm/notebook#5.-Building-LSTM-Model
+
+Idea:
+
+- when highScore stabilize, sell because market does not tend to increase value
+- when lowScore stabilize, buy because market does not tend to decrease value
+
 ## Takeaways
 
 Authenticating Terraform Cloud on GCP needs a `GOOGLE_SERVICE_ACCOUNT` as environment variable configured there
