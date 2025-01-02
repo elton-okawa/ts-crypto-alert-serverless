@@ -15,7 +15,7 @@ export class SendAlertUseCase implements IUseCase<void, void> {
 
   constructor(
     private repository: ICryptoRepository,
-    private notifier: INotifier,
+    private notifiers: INotifier[],
     private percentageAlert: IPercentageAlertUseCase,
   ) {}
 
@@ -43,7 +43,9 @@ export class SendAlertUseCase implements IUseCase<void, void> {
       return;
     }
 
-    await this.notifier.send(notification);
+    await Promise.all(
+      this.notifiers.map((notifier) => notifier.send(notification)),
+    );
 
     this.logger.log('Finished use case!');
   }
