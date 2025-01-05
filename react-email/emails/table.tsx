@@ -25,6 +25,13 @@ export const TableRow: React.FC<PropsWithChildren<Props>> = ({
   );
 };
 
+export const TableHeader: React.FC<PropsWithChildren<Props>> = ({
+  children,
+  className = '',
+}) => {
+  return <th className={`font-semibold p-2 ${className}`}>{children}</th>;
+};
+
 export const TableData: React.FC<PropsWithChildren<Props>> = ({
   children,
   className = '',
