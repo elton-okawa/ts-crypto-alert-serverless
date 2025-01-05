@@ -7,9 +7,10 @@ import {
   Tailwind,
 } from '@react-email/components';
 import * as React from 'react';
+import { Table, TableData, TableRow } from './table';
 
 type CryptoAlertProps = {
-  rows: {
+  percentage: {
     code: string;
     yesterday: number;
     lastWeek: number;
@@ -17,6 +18,10 @@ type CryptoAlertProps = {
     lastYear: number;
     lastTwoYears: number;
   }[];
+  price: {
+    code: string;
+    value: number;
+  };
 };
 
 export default function CryptoAlert(props: CryptoAlertProps) {
@@ -27,23 +32,20 @@ export default function CryptoAlert(props: CryptoAlertProps) {
       <Tailwind>
         <Body className="font-sans flex flex-col justify-center">
           <Heading>Test</Heading>
-          <table className="border-collapse">
+          <Table>
             <thead>
-              <tr className="border-b border-x-0 border-t-0 border-gray-300 border-solid">
+              <TableRow className="border-gray-200">
                 {['', '1d', '1w', '1m', '1y', '2y'].map((header: string) => (
                   <th key={header} className="font-semibold p-2">
                     {header}
                   </th>
                 ))}
-              </tr>
+              </TableRow>
             </thead>
             <tbody>
-              {props.rows.map((row) => (
-                <tr
-                  key={row.code}
-                  className="border-b border-x-0 border-t-0 border-gray-200 border-solid"
-                >
-                  {Object.values(row).map((value) => {
+              {props.percentage.map((row) => (
+                <TableRow key={row.code}>
+                  {Object.values(row).map((value, index) => {
                     let text = value;
                     let colorClass = '';
 
@@ -53,15 +55,15 @@ export default function CryptoAlert(props: CryptoAlertProps) {
                     }
 
                     return (
-                      <td className={`p-2 text-center ${colorClass}`}>
+                      <TableData key={index} className={colorClass}>
                         {text}
-                      </td>
+                      </TableData>
                     );
                   })}
-                </tr>
+                </TableRow>
               ))}
             </tbody>
-          </table>
+          </Table>
         </Body>
       </Tailwind>
     </Html>
@@ -77,7 +79,7 @@ function getColorClass(value: number) {
 }
 
 CryptoAlert.PreviewProps = {
-  rows: Array.from({ length: 10 }).map(() => ({
+  percentage: Array.from({ length: 10 }).map(() => ({
     code: 'BTC',
     yesterday: -5,
     lastWeek: 20,
