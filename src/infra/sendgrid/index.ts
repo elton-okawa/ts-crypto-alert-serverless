@@ -1,4 +1,7 @@
+import { INotificationFormatter } from '@src/domain';
 import { sendgridConfig } from './sendgrid.config';
-import { SendgridNotifier } from './sendgrid.notifier';
+import { FormatterResult, SendgridNotifier } from './sendgrid.notifier';
 
-export const sendgridNotifier = new SendgridNotifier(sendgridConfig);
+export const sendgridNotifierFactory = (
+  formatter: INotificationFormatter<FormatterResult>,
+) => new SendgridNotifier(sendgridConfig, formatter);

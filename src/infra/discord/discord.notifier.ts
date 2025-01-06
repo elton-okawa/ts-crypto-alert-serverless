@@ -3,7 +3,7 @@ import { DiscordService } from './discord.service';
 
 export class DiscordNotifier implements INotifier {
   constructor(
-    private formatter: INotificationFormatter,
+    private formatter: INotificationFormatter<string>,
     private discord: DiscordService,
   ) {}
 

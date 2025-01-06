@@ -1,9 +1,14 @@
-import { INotifier, Notification } from '@src/domain';
+import { INotificationFormatter, INotifier, Notification } from '@src/domain';
 import sendgrid from '@sendgrid/mail';
 import { SendgridConfig } from './sendgrid.config';
 
+export type FormatterResult = Record<string, any>;
+
 export class SendgridNotifier implements INotifier {
-  constructor(private _config: SendgridConfig) {
+  constructor(
+    private _config: SendgridConfig,
+    private _formatter: INotificationFormatter<FormatterResult>,
+  ) {
     sendgrid.setApiKey(_config.apiKey);
   }
 
@@ -12,12 +17,8 @@ export class SendgridNotifier implements INotifier {
       to: this._config.mailTo,
       from: this._config.mailFrom,
       templateId: this._config.templateId,
-      dynamicTemplateData: this.getTemplateData(notification),
+      dynamicTemplateData: this._formatter.format(notification),
     };
     await sendgrid.send(mail);
-  }
-
-  private getTemplateData(notification: Notification) {
-    return {};
   }
 }

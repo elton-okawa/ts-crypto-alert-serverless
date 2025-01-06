@@ -8,38 +8,37 @@ import {
 } from '@react-email/components';
 import * as React from 'react';
 import { Table, TableData, TableHeader, TableRow } from './table';
-import Color from 'colorjs.io';
+
+type ColoredField = {
+  value: string;
+  colorClass: string;
+};
 
 type Decision = 'B' | 'S';
 
 type CryptoAlertProps = {
-  percentage: {
+  percentages: {
     code: string;
-    yesterday: number;
-    lastWeek: number;
-    lastMonth: number;
-    lastYear: number;
-    lastTwoYears: number;
+    yesterday: ColoredField;
+    lastWeek: ColoredField;
+    lastMonth: ColoredField;
+    lastYear: ColoredField;
+    lastTwoYears: ColoredField;
   }[];
-  price: {
+  prices: {
+    hexColor: string;
     code: string;
-    value: number;
+    value: string;
     decision: Decision;
-    streak: number;
+    streak: string;
   }[];
 };
-
-const BUY_START_COLOR = '#bbff99';
-const BUY_END_COLOR = '#ecffe3';
-const SELL_START_COLOR = '#ff9696';
-const SELL_END_COLOR = '#ffd6d6';
-const MAX_STREAK = 30;
 
 export default function CryptoAlert(props: CryptoAlertProps) {
   return (
     <Html>
       <Head />
-      <Preview>Test</Preview>
+      <Preview>Crypto Alert</Preview>
       <Tailwind>
         <Body className="font-sans flex flex-col justify-center">
           <Heading>Percentage</Heading>
@@ -52,23 +51,25 @@ export default function CryptoAlert(props: CryptoAlertProps) {
               </TableRow>
             </thead>
             <tbody>
-              {props.percentage.map((row) => (
+              {props.percentages.map((row) => (
                 <TableRow key={row.code}>
-                  {Object.values(row).map((value, index) => {
-                    let text = value;
-                    let colorClass = '';
+                  <TableData>{row.code}</TableData>
+                  {Object.entries(row)
+                    .filter(([key]) => key !== 'code')
+                    .map(([, coloredField], index) => {
+                      if (typeof coloredField === 'string') {
+                        return;
+                      }
 
-                    if (typeof value === 'number') {
-                      text = `${value}%`;
-                      colorClass = getColorClass(value);
-                    }
-
-                    return (
-                      <TableData key={index} className={colorClass}>
-                        {text}
-                      </TableData>
-                    );
-                  })}
+                      return (
+                        <TableData
+                          key={index}
+                          className={coloredField.colorClass}
+                        >
+                          {coloredField.value}
+                        </TableData>
+                      );
+                    })}
                 </TableRow>
               ))}
             </tbody>
@@ -90,23 +91,13 @@ export default function CryptoAlert(props: CryptoAlertProps) {
               </TableRow>
             </thead>
             <tbody>
-              {props.price.map((row) => {
-                const hexColor = interpolateColor(
-                  row.decision,
-                  row.streak,
-                  MAX_STREAK,
-                );
-
+              {props.prices.map((row) => {
                 return (
-                  <TableRow key={row.code} className={`bg-[${hexColor}]`}>
+                  <TableRow key={row.code} className={`bg-[${row.hexColor}]`}>
                     <TableData>{row.code}</TableData>
-                    <TableData>{row.value.toPrecision(6)}</TableData>
+                    <TableData>{row.value}</TableData>
                     <TableData>{row.decision}</TableData>
-                    <TableData>
-                      {row.streak > MAX_STREAK
-                        ? `+${MAX_STREAK}`
-                        : row.streak.toString()}
-                    </TableData>
+                    <TableData>{row.streak}</TableData>
                   </TableRow>
                 );
               })}
@@ -118,42 +109,35 @@ export default function CryptoAlert(props: CryptoAlertProps) {
   );
 }
 
-function getColorClass(value: number) {
-  if (Math.floor(value) === 0) {
-    return 'text-gray-400';
-  }
-
-  return value > 0 ? 'text-green-500' : 'text-red-500';
-}
-
-function interpolateColor(
-  decision: Decision,
-  streak: number,
-  maxStreak: number,
-) {
-  const start = new Color(
-    decision === 'B' ? BUY_START_COLOR : SELL_START_COLOR,
-  );
-  const end = new Color(decision === 'B' ? BUY_END_COLOR : SELL_END_COLOR);
-  const position = streak > maxStreak ? 1 : streak / maxStreak;
-
-  const interpolate = start.range(end);
-  return interpolate(position).to('srgb').toString({ format: 'hex' });
-}
-
 CryptoAlert.PreviewProps = {
-  percentage: Array.from({ length: 10 }).map(() => ({
+  percentages: Array.from({ length: 10 }).map(() => ({
     code: 'BTC',
-    yesterday: -5,
-    lastWeek: 20,
-    lastMonth: 0,
-    lastYear: -200,
-    lastTwoYears: +100,
+    yesterday: {
+      value: '-5%',
+      colorClass: 'text-red-500',
+    },
+    lastWeek: {
+      value: '5%',
+      colorClass: 'text-green-500',
+    },
+    lastMonth: {
+      value: '0%',
+      colorClass: 'text-gray-400',
+    },
+    lastYear: {
+      value: '-200%',
+      colorClass: 'text-red-500',
+    },
+    lastTwoYears: {
+      value: '100%',
+      colorClass: 'text-green-500',
+    },
   })),
-  price: Array.from({ length: 10 }, (_, index) => ({
+  prices: Array.from({ length: 10 }, (_, index) => ({
     code: 'BTC',
-    value: 123456 / Math.pow(10, index),
+    hexColor: Math.random() > 0.5 ? '#86ff80' : '#ff8a66',
+    value: (123456 / Math.pow(10, index)).toString(),
     decision: Math.random() > 0.5 ? 'B' : 'S',
-    streak: index * index,
+    streak: (index * index).toString(),
   })),
 } as CryptoAlertProps;

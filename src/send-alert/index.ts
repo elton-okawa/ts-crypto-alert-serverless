@@ -1,13 +1,18 @@
 import { HttpFunction } from '@google-cloud/functions-framework';
 import { SendAlertUseCase } from './use-case';
-import { cryptoRepository, notifiers } from '@src/infra';
+import {
+  cryptoRepository,
+  discordNotifier,
+  sendgridNotifierFactory,
+} from '@src/infra';
 import { handlerTemplateFactory } from '@src/lib';
 import { PercentageAlertUseCase } from './percentage-alert';
+import { EmailAlertFormatter } from './email-alert.formatter';
 
 const percentageAlert = new PercentageAlertUseCase(cryptoRepository);
 const useCase = new SendAlertUseCase(
   cryptoRepository,
-  notifiers,
+  [discordNotifier, sendgridNotifierFactory(new EmailAlertFormatter())],
   percentageAlert,
 );
 

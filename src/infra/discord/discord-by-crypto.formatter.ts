@@ -17,7 +17,9 @@ const PERIOD_COLUMNS = [
 const PAD_STRING = ' ';
 const COLUMN_LENGTH = 8;
 
-export class DiscordByCryptoFormatter implements INotificationFormatter {
+export class DiscordByCryptoFormatter
+  implements INotificationFormatter<string>
+{
   format(notification: Notification): string {
     const byCrypto = toMapArray(notification.percentages, 'symbol');
     const triggered = Object.fromEntries(

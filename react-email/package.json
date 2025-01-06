@@ -9,7 +9,6 @@
   },
   "dependencies": {
     "@react-email/components": "0.0.31",
-    "colorjs.io": "^0.5.2",
     "react": "19.0.0",
     "react-dom": "19.0.0"
   },

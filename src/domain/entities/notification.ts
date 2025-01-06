@@ -1,6 +1,12 @@
 import { ValueObject } from '@src/domain/core';
 import { CryptoPrice } from './crypto-price';
 import { Period } from './period';
+import { toMap, toMapArray } from '@src/lib';
+
+export type PercentageByCrypto = Record<
+  string,
+  Record<Period, PercentageNotification>
+>;
 
 export class Notification extends ValueObject {
   percentages: PercentageNotification[];
@@ -9,6 +15,17 @@ export class Notification extends ValueObject {
     return this.percentages.filter((notification) =>
       notification.shouldNotify(),
     );
+  }
+
+  get percentageByCrypto(): PercentageByCrypto {
+    const byCrypto = toMapArray(this.percentages, 'symbol');
+    const grouped = Object.fromEntries(
+      Object.entries(byCrypto).map(([symbol, percentages]) => {
+        return [symbol, toMap(percentages, 'period')];
+      }),
+    );
+
+    return grouped;
   }
 
   constructor(params: Partial<Notification>) {

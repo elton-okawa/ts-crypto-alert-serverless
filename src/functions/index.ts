@@ -1,5 +1,5 @@
 import { HttpFunction } from '@google-cloud/functions-framework';
-import sendAlert from './send-alert';
+import sendAlert from '@src/send-alert';
 import updatePrices from './update-prices';
 import updateHistoricalPrices from './update-historical-prices';
 import {

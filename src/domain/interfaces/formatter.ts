@@ -1,7 +1,7 @@
 import { Notification } from '@src/domain/entities';
 
-export interface INotificationFormatter {
-  format(notification: Notification): string;
+export interface INotificationFormatter<T> {
+  format(notification: Notification): T;
 }
 
 export const INotificationFormatter = Symbol('INotificationFormatter');
