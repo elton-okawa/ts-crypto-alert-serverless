@@ -79,6 +79,7 @@ export class BinanceAPI implements ICryptoAPI {
   async getHistoricalPrice({
     symbol,
     tokenPair,
+    startTime,
   }: GetHistoricalPriceParams): Promise<CryptoPrice[]> {
     this.logger.log(`Fetching historical price for "${symbol}"...`);
 
@@ -89,8 +90,9 @@ export class BinanceAPI implements ICryptoAPI {
       {
         params: {
           symbol: fullSymbol,
-          interval: '1w',
-          startTime: '0',
+          interval: '1d',
+          startTime,
+          limit: 1000, // max is 1000
         },
       },
     );
@@ -105,7 +107,7 @@ export class BinanceAPI implements ICryptoAPI {
       CryptoPrice.create({
         symbol,
         pair: tokenPair,
-        price: parseFloat(kline[1]),
+        price: parseFloat(kline[4]),
         createdAt: new Date(kline[0]),
       }),
     );

@@ -6,9 +6,7 @@ import {
 } from '@src/domain';
 import { Logger } from '@src/logger';
 
-export class UpdateHistoricalPricesUseCase
-  implements IUseCase<void, CryptoPrice[]>
-{
+export class UpdateHistoricalPricesUseCase implements IUseCase<void, void> {
   private readonly logger = new Logger(UpdateHistoricalPricesUseCase.name);
 
   constructor(
@@ -16,7 +14,7 @@ export class UpdateHistoricalPricesUseCase
     private api: ICryptoAPI,
   ) {}
 
-  async execute(): Promise<CryptoPrice[]> {
+  async execute(): Promise<void> {
     this.logger.log(`Updating historical prices...`);
 
     const cryptocurrencies = await this.repository.listNewCryptocurrencies();
@@ -25,18 +23,9 @@ export class UpdateHistoricalPricesUseCase
       return;
     }
 
-    const prices = (
-      await Promise.all(
-        cryptocurrencies.map((crypto) =>
-          this.api.getHistoricalPrice({
-            symbol: crypto.symbol,
-            tokenPair: 'USDC',
-          }),
-        ),
-      )
-    ).flat();
-
-    await this.repository.savePrices(prices);
+    for (const crypto of cryptocurrencies) {
+      await this.paginatedUpdateHistoricalPrice(crypto.symbol);
+    }
 
     cryptocurrencies.map((crypto) => {
       crypto.historicalData = true;
@@ -45,6 +34,29 @@ export class UpdateHistoricalPricesUseCase
     await this.repository.saveCryptocurrencies(cryptocurrencies);
 
     this.logger.log('Historical prices updated successfully!');
-    return prices;
+  }
+
+  private async paginatedUpdateHistoricalPrice(symbol: string): Promise<void> {
+    let startTime = 0;
+    let results: CryptoPrice[] = [];
+
+    while (results.length > 0 || startTime === 0) {
+      this.logger.debug(
+        `[${symbol}] Historical data from: ${new Date(startTime).toISOString()}...`,
+      );
+      results = await this.api.getHistoricalPrice({
+        symbol: symbol,
+        tokenPair: 'USDC',
+        startTime,
+      });
+      this.logger.debug(`[${symbol}] Found: ${results.length}...`);
+
+      if (!results.length) break;
+
+      await this.repository.savePrices(results);
+
+      // shift start time to avoid same record
+      startTime = results[results.length - 1].createdAt.getTime() + 1;
+    }
   }
 }
