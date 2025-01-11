@@ -39,6 +39,21 @@ variable "binance_api_url" {
   type = string
 }
 
+variable "sendgrid_mail_to" {
+  description = "Sendgrid mail to"
+  type = string
+}
+
+variable "sendgrid_mail_from" {
+  description = "Sengrid mail from"
+  type = string
+}
+
+variable "sendgrid_template_id_crypto_alert" {
+  description = "Sendgrid template ID crypto alert"
+  type = string
+}
+
 // Secrets - ideally should be secrets but Secret Manager does not have free tier
 variable "database_url" {
   description = "MongoDB Database URL"
@@ -52,5 +67,10 @@ variable "discord_bot_token" {
 
 variable "discord_channel_id" {
   description = "Discord channel ID"
+  type = string
+}
+
+variable "sendgrid_api_key" {
+  description = "Sendgrid API key"
   type = string
 }
