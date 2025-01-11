@@ -15,6 +15,7 @@ export type GetPricesParams = {
 export type GetHistoricalPriceParams = {
   symbol: string;
   tokenPair: string;
+  startTime: number;
 };
 
 export type GetKlineParams = {

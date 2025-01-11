@@ -99,9 +99,22 @@ export class CryptoRepository implements ICryptoRepository {
 
   async savePrices(prices: CryptoPrice[]): Promise<void> {
     this.logger.log(`Saving '${prices.length}' prices`);
-    await this.database.db
-      .collection<CryptoPrice>(CryptoPrice.TABLE)
-      .insertMany(prices);
+    await this.database.db.collection<CryptoPrice>(CryptoPrice.TABLE).bulkWrite(
+      prices.map((price) => {
+        const { _id, ...data } = price;
+
+        return {
+          updateOne: {
+            filter: {
+              symbol: price.symbol,
+              createdAt: price.createdAt,
+            },
+            update: { $set: data },
+            upsert: true,
+          },
+        };
+      }),
+    );
     this.logger.log('Prices saved successfully');
   }
 
