@@ -1,9 +1,10 @@
 export type ColoredField = {
   value: string;
-  colorClass: string;
+  color: string;
 };
 
 export type CryptoAlertTemplateData = {
+  subject: string;
   percentage: {
     code: string;
     yesterday: ColoredField;

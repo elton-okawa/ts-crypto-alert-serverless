@@ -19,6 +19,7 @@ export class SendgridNotifier implements INotifier {
       templateId: this._config.templateId,
       dynamicTemplateData: this._formatter.format(notification),
     };
+    console.log(JSON.stringify(this._formatter.format(notification)));
     await sendgrid.send(mail);
   }
 }

@@ -84,7 +84,10 @@ export default function CryptoAlert(props: CryptoAlertProps) {
                   { label: 'R', width: '20px' },
                   { label: 'S', width: '30px' },
                 ].map(({ label, width }) => (
-                  <TableHeader key={label} className={`w-[${width}]`}>
+                  <TableHeader
+                    key={label}
+                    className={`${width ? `w-[${width}]` : ''}`}
+                  >
                     {label}
                   </TableHeader>
                 ))}

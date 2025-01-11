@@ -15,12 +15,14 @@ const SELL_START_COLOR = '#ff9696';
 const SELL_END_COLOR = '#ffd6d6';
 const MAX_STREAK = 30;
 
+const dateFormatter = new Intl.DateTimeFormat('pt-BR');
+
 export class EmailAlertFormatter
   implements INotificationFormatter<CryptoAlertTemplateData>
 {
   format(notification: Notification): CryptoAlertTemplateData {
-    console.log(notification);
     return {
+      subject: `Crypto Alert - ${dateFormatter.format(new Date())}`,
       percentage: this.formatPercentages(notification.percentageByCrypto),
       price: [],
     };
@@ -43,17 +45,22 @@ export class EmailAlertFormatter
 
   private formatPercentage(data: PercentageNotification): ColoredField {
     return {
-      colorClass: this.getColorClass(data?.difference),
+      color: this.getColor(data?.difference),
       value: percentage(data?.difference, { decimalPlaces: 0 }),
     };
   }
 
-  private getColorClass(value: number | undefined) {
-    if (!value || Math.floor(value) === 0) {
-      return 'text-gray-400';
+  private getColor(value: number | undefined) {
+    const gray400 = '#9ca3af';
+    const green500 = '#22c55e';
+    const red500 = '#ef4444';
+
+    // less than 1% show as gray
+    if (!value || Math.floor(value * 100) === 0) {
+      return gray400;
     }
 
-    return value > 0 ? 'text-green-500' : 'text-red-500';
+    return value > 0 ? green500 : red500;
   }
 
   private interpolateColor(

@@ -28,5 +28,5 @@ export function percentage(
   const percentage = Math.abs(value * 100);
   const signal = value > 0 ? '+' : '-';
   const symbol = includeSymbol ? '%' : '';
-  return `${symbol}${signal}${percentage.toFixed(decimalPlaces)}`;
+  return `${signal}${percentage.toFixed(decimalPlaces)}${symbol}`;
 }
