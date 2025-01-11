@@ -43,13 +43,13 @@ export class EmailAlertFormatter
 
   private formatPercentage(data: PercentageNotification): ColoredField {
     return {
-      colorClass: this.getColorClass(data.difference),
-      value: percentage(data.difference, { decimalPlaces: 0 }),
+      colorClass: this.getColorClass(data?.difference),
+      value: percentage(data?.difference, { decimalPlaces: 0 }),
     };
   }
 
-  private getColorClass(value: number) {
-    if (Math.floor(value) === 0) {
+  private getColorClass(value: number | undefined) {
+    if (!value || Math.floor(value) === 0) {
       return 'text-gray-400';
     }
 

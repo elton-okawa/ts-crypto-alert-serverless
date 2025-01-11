@@ -15,9 +15,13 @@ export type PercentageOptions = {
 };
 
 export function percentage(
-  value: number,
+  value: number | undefined,
   options: PercentageOptions = {},
 ): string {
+  if (!value) {
+    return '-';
+  }
+
   const decimalPlaces = options.decimalPlaces ?? 2;
   const includeSymbol = options.includeSymbol ?? true;
 

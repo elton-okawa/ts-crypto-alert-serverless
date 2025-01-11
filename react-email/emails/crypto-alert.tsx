@@ -40,9 +40,9 @@ export default function CryptoAlert(props: CryptoAlertProps) {
       <Head />
       <Preview>Crypto Alert</Preview>
       <Tailwind>
-        <Body className="font-sans flex flex-col justify-center">
-          <Heading>Percentage</Heading>
-          <Table>
+        <Body className="font-sans w-full">
+          <Heading className="text-center">Percentage</Heading>
+          <Table className="m-auto">
             <thead>
               <TableRow className="border-gray-300">
                 {['', '1d', '1w', '1m', '1y', '2y'].map((header: string) => (
@@ -74,8 +74,8 @@ export default function CryptoAlert(props: CryptoAlertProps) {
               ))}
             </tbody>
           </Table>
-          <Heading>Price</Heading>
-          <Table>
+          <Heading className="text-center">Price</Heading>
+          <Table className="m-auto">
             <thead>
               <TableRow className="border-gray-300">
                 {[
