@@ -9,6 +9,8 @@ import {
   Cryptocurrency,
 } from '@src/domain';
 import { Logger } from '@src/logger';
+import { merge } from 'lodash';
+import { PriceAlertUseCase } from './price-alert';
 
 export class SendAlertUseCase implements IUseCase<void, void> {
   private readonly logger = new Logger(SendAlertUseCase.name);
@@ -17,6 +19,7 @@ export class SendAlertUseCase implements IUseCase<void, void> {
     private repository: ICryptoRepository,
     private notifiers: INotifier[],
     private percentageAlert: IPercentageAlertUseCase,
+    private priceAlert: PriceAlertUseCase,
   ) {}
 
   async execute(): Promise<void> {
@@ -32,16 +35,23 @@ export class SendAlertUseCase implements IUseCase<void, void> {
       cryptocurrencies,
       alertConfigMap,
     );
+    const priceNotifications = await this.calculatePriceNotifications(
+      cryptocurrencies,
+      alertConfigMap,
+    );
 
     await this.repository.saveCryptocurrencies(cryptocurrencies);
 
     const notification = Notification.create({
       percentages: percentageNotifications,
+      prices: priceNotifications,
     });
-    if (!notification.hasTriggeredNotifications()) {
-      this.logger.log('There is no notifications to send');
-      return;
-    }
+
+    // Always send for now
+    // if (!notification.hasTriggeredNotifications()) {
+    //   this.logger.log('There is no notifications to send');
+    //   return;
+    // }
 
     await Promise.all(
       this.notifiers.map((notifier) => notifier.send(notification)),
@@ -51,7 +61,7 @@ export class SendAlertUseCase implements IUseCase<void, void> {
   }
 
   private alertFor(symbol: string, alertMap: Record<string, Alert>): Alert {
-    return alertMap[symbol] ?? alertMap['default'];
+    return merge({}, alertMap['default'], alertMap[symbol] ?? {});
   }
 
   private async calculatePercentageNotifications(
@@ -75,5 +85,24 @@ export class SendAlertUseCase implements IUseCase<void, void> {
         }),
       )
     ).flat();
+  }
+
+  private async calculatePriceNotifications(
+    cryptocurrencies: Cryptocurrency[],
+    alertConfigMap: Record<string, Alert>,
+  ) {
+    return (
+      await Promise.all(
+        cryptocurrencies.map(async (crypto) => {
+          const alert = this.alertFor(crypto.symbol, alertConfigMap);
+          const priceNotification = await this.priceAlert.execute({
+            cryptocurrency: crypto,
+            config: alert.price,
+          });
+
+          return priceNotification;
+        }),
+      )
+    ).filter((nt) => !!nt);
   }
 }

@@ -1,3 +1,5 @@
+import { Decision } from '@src/domain';
+
 export type ColoredField = {
   value: string;
   color: string;
@@ -14,12 +16,10 @@ export type CryptoAlertTemplateData = {
     lastTwoYears: ColoredField;
   }[];
   price: {
-    hexColor: string;
+    color: string;
     code: string;
     value: string;
     decision: Decision;
     streak: string;
   }[];
 };
-
-export type Decision = 'B' | 'S';

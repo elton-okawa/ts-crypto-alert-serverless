@@ -4,10 +4,12 @@ import { subHours, setMinutes, setSeconds, setMilliseconds } from 'date-fns/fp';
 import { compose } from 'lodash/fp';
 import { Entity } from '@src/domain/core';
 import { PercentageAlert, PercentageAlertParams } from './percentage-alert.vo';
+import { PriceAlert, PriceAlertParams } from './price-alert.vo';
 
 export type AlertParams = Entity & {
   symbol: string;
   percentages: PercentageAlertParams[];
+  price: PriceAlertParams;
 };
 
 export class Alert extends Entity {
@@ -15,6 +17,7 @@ export class Alert extends Entity {
 
   symbol: string;
   percentages: PercentageAlert[];
+  price: PriceAlert;
 
   private percentageByPeriod: Record<Period, PercentageAlert>;
 
@@ -24,6 +27,7 @@ export class Alert extends Entity {
     this.symbol = params.symbol;
     this.percentages = PercentageAlert.createMany(params.percentages);
     this.percentageByPeriod = toMap(this.percentages, 'period');
+    this.price = PriceAlert.create(params.price);
   }
 
   getPercentage(period: Period, referenceDate: Date) {

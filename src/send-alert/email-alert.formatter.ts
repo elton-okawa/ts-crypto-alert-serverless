@@ -1,19 +1,23 @@
 import {
+  Decision,
   INotificationFormatter,
   Notification,
   PercentageByCrypto,
   PercentageNotification,
   Period,
+  PriceNotification,
 } from '@src/domain';
-import { ColoredField, CryptoAlertTemplateData, Decision } from './types';
+import { ColoredField, CryptoAlertTemplateData } from './types';
 import Color from 'colorjs.io';
 import { percentage } from '@src/lib';
-
-const BUY_START_COLOR = '#bbff99';
-const BUY_END_COLOR = '#ecffe3';
-const SELL_START_COLOR = '#ff9696';
-const SELL_END_COLOR = '#ffd6d6';
-const MAX_STREAK = 30;
+import {
+  BUY_START_COLOR,
+  SELL_START_COLOR,
+  BUY_END_COLOR,
+  SELL_END_COLOR,
+  MAX_STREAK,
+  KEEP_COLOR,
+} from './constants';
 
 const dateFormatter = new Intl.DateTimeFormat('pt-BR');
 
@@ -24,7 +28,7 @@ export class EmailAlertFormatter
     return {
       subject: `Crypto Alert - ${dateFormatter.format(new Date())}`,
       percentage: this.formatPercentages(notification.percentageByCrypto),
-      price: [],
+      price: this.formatPrices(notification.prices),
     };
   }
 
@@ -41,6 +45,18 @@ export class EmailAlertFormatter
         lastTwoYears: this.formatPercentage(data[Period.TWO_YEARS]),
       };
     });
+  }
+
+  private formatPrices(
+    prices: PriceNotification[],
+  ): CryptoAlertTemplateData['price'] {
+    return prices.map((p) => ({
+      color: this.interpolateColor(p.decision, p.streak, MAX_STREAK),
+      code: p.symbol,
+      value: p.price.toPrecision(p.price > 0 ? 6 : 4),
+      decision: p.decision,
+      streak: p.streak >= MAX_STREAK ? `${MAX_STREAK}+` : p.streak.toString(),
+    }));
   }
 
   private formatPercentage(data: PercentageNotification): ColoredField {
@@ -68,10 +84,16 @@ export class EmailAlertFormatter
     streak: number,
     maxStreak: number,
   ) {
+    if (decision === Decision.Keep) {
+      return KEEP_COLOR;
+    }
+
     const start = new Color(
-      decision === 'B' ? BUY_START_COLOR : SELL_START_COLOR,
+      decision === Decision.Buy ? BUY_START_COLOR : SELL_START_COLOR,
     );
-    const end = new Color(decision === 'B' ? BUY_END_COLOR : SELL_END_COLOR);
+    const end = new Color(
+      decision === Decision.Buy ? BUY_END_COLOR : SELL_END_COLOR,
+    );
     const position = streak > maxStreak ? 1 : streak / maxStreak;
 
     const interpolate = start.range(end);

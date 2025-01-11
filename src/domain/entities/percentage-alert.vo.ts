@@ -1,22 +1,20 @@
-import { ValueObject } from '@src/domain/core';
+import { BaseAlert, BaseAlertParams } from './base-alert.vo';
 import { Period } from './period';
-import { Cooldown } from './cooldown.vo';
 
-export type PercentageAlertParams = Omit<PercentageAlert, 'cooldown'> & {
-  cooldown: string;
-};
-
-export class PercentageAlert extends ValueObject {
+export type PercentageAlertParams = BaseAlertParams & {
   period: Period;
   difference: number;
-  readonly cooldown: Cooldown;
+};
+
+export class PercentageAlert extends BaseAlert<number> {
+  period: Period;
+  difference: number;
 
   constructor(params: PercentageAlertParams) {
-    super();
+    super(params);
 
     this.period = params.period;
     this.difference = params.difference;
-    this.cooldown = Cooldown.create(params.cooldown);
   }
 
   triggered(value: number): boolean {

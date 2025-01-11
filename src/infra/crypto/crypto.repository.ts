@@ -174,4 +174,47 @@ export class CryptoRepository implements ICryptoRepository {
 
     this.logger.debug(`UpdatedAt set successfully!`);
   }
+
+  async getDailyPrices(symbol: string, options: { limit: number }) {
+    this.logger.debug(
+      `Getting last ${options.limit} daily prices of "${symbol}"...`,
+    );
+
+    const results = await this.database.db
+      .collection(CryptoPrice.TABLE)
+      .aggregate<MeanPriceResult>([
+        {
+          $match: {
+            symbol: symbol,
+          },
+        },
+        {
+          $sort: {
+            createdAt: -1,
+          },
+        },
+        {
+          $addFields: {
+            date: { $dateToString: { format: '%Y-%m-%d', date: '$createdAt' } },
+          },
+        },
+        {
+          $group: {
+            _id: '$date',
+            symbol: { $first: '$symbol' },
+            price: { $first: '$price' },
+            pair: { $first: '$pair' },
+            createdAt: { $first: '$createdAt' },
+          },
+        },
+        {
+          $limit: options.limit,
+        },
+      ])
+      .toArray();
+
+    this.logger.debug(`Daily prices got successfully!`);
+
+    return CryptoPrice.createMany(results);
+  }
 }

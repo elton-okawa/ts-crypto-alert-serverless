@@ -17,6 +17,10 @@ export interface ICryptoRepository {
   ): Promise<CryptoPrice | null>;
   saveCryptocurrencies(cryptocurrencies: Cryptocurrency[]): Promise<void>;
   cryptocurrenciesUpdated(symbols: string[]): Promise<void>;
+  getDailyPrices(
+    symbol: string,
+    options: { limit: number },
+  ): Promise<CryptoPrice[]>;
 }
 
 export type MeanPriceResult = {
