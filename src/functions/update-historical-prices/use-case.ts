@@ -46,7 +46,7 @@ export class UpdateHistoricalPricesUseCase implements IUseCase<void, void> {
       );
       results = await this.api.getHistoricalPrice({
         symbol: symbol,
-        tokenPair: 'USDC',
+        tokenPair: 'USDT',
         startTime,
       });
       this.logger.debug(`[${symbol}] Found: ${results.length}...`);
