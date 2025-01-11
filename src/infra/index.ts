@@ -1,11 +1,13 @@
 import { IConnectable } from '@src/domain';
 import { binanceApi } from './binance';
 import { databaseService } from './database';
-import { discordNotifier, discordService } from './discord';
+import { discordService } from './discord';
+
+export { discordNotifier } from './discord';
+export { sendgridNotifierFactory } from './sendgrid';
 
 export { cryptoRepository } from './crypto';
 export const cryptoApi = binanceApi;
-export const notifier = discordNotifier;
 
 const connectable: IConnectable[] = [databaseService, discordService];
 

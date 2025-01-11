@@ -4,3 +4,4 @@ export * from './notification';
 export * from './period';
 export * from './alert.entity';
 export * from './percentage-alert.vo';
+export * from './price-alert.vo';

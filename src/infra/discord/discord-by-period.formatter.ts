@@ -10,7 +10,9 @@ type FormatOptions = {
   colorize?: boolean;
 };
 
-export class DiscordByPeriodFormatter implements INotificationFormatter {
+export class DiscordByPeriodFormatter
+  implements INotificationFormatter<string>
+{
   format(notification: Notification): string {
     const percentages = notification.triggeredPercentages;
     return [

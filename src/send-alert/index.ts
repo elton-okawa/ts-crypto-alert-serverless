@@ -1,14 +1,22 @@
 import { HttpFunction } from '@google-cloud/functions-framework';
 import { SendAlertUseCase } from './use-case';
-import { cryptoRepository, notifier } from '@src/infra';
+import {
+  cryptoRepository,
+  discordNotifier,
+  sendgridNotifierFactory,
+} from '@src/infra';
 import { handlerTemplateFactory } from '@src/lib';
 import { PercentageAlertUseCase } from './percentage-alert';
+import { EmailAlertFormatter } from './email-alert.formatter';
+import { PriceAlertUseCase } from './price-alert';
 
 const percentageAlert = new PercentageAlertUseCase(cryptoRepository);
+const priceAlert = new PriceAlertUseCase(cryptoRepository);
 const useCase = new SendAlertUseCase(
   cryptoRepository,
-  notifier,
+  [discordNotifier, sendgridNotifierFactory(new EmailAlertFormatter())],
   percentageAlert,
+  priceAlert,
 );
 
 const handler: HttpFunction = async (_req, res) => {

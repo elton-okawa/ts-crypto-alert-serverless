@@ -21,6 +21,7 @@ export enum Period {
   QUARTERLY = 'QUARTERLY',
   SEMI_ANNUAL = 'SEMI_ANNUAL',
   YEARLY = 'YEARLY',
+  TWO_YEARS = 'TWO_YEARS',
 }
 
 export const PeriodHelper = {
@@ -47,6 +48,7 @@ const periodToDate: Record<Period, (ref: Date) => Date> = {
   [Period.QUARTERLY]: compose(subMonths(3)),
   [Period.SEMI_ANNUAL]: compose(subMonths(6)),
   [Period.YEARLY]: compose(subYears(1)),
+  [Period.TWO_YEARS]: compose(subYears(2)),
 };
 
 const periodToReadable: Record<Period, string> = {
@@ -60,4 +62,5 @@ const periodToReadable: Record<Period, string> = {
   [Period.QUARTERLY]: '3m',
   [Period.SEMI_ANNUAL]: '6m',
   [Period.YEARLY]: '1y',
+  [Period.TWO_YEARS]: '2y',
 };

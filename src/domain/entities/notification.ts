@@ -1,9 +1,17 @@
 import { ValueObject } from '@src/domain/core';
 import { CryptoPrice } from './crypto-price';
 import { Period } from './period';
+import { toMap, toMapArray } from '@src/lib';
+import { Decision } from '../types';
+
+export type PercentageByCrypto = Record<
+  string,
+  Record<Period, PercentageNotification>
+>;
 
 export class Notification extends ValueObject {
   percentages: PercentageNotification[];
+  prices: PriceNotification[];
 
   get triggeredPercentages() {
     return this.percentages.filter((notification) =>
@@ -11,10 +19,22 @@ export class Notification extends ValueObject {
     );
   }
 
+  get percentageByCrypto(): PercentageByCrypto {
+    const byCrypto = toMapArray(this.percentages, 'symbol');
+    const grouped = Object.fromEntries(
+      Object.entries(byCrypto).map(([symbol, percentages]) => {
+        return [symbol, toMap(percentages, 'period')];
+      }),
+    );
+
+    return grouped;
+  }
+
   constructor(params: Partial<Notification>) {
     super();
 
     this.percentages = PercentageNotification.createMany(params.percentages);
+    this.prices = PriceNotification.createMany(params.prices);
   }
 
   hasNotifications(): boolean {
@@ -69,5 +89,28 @@ export class PercentageNotification extends BaseNotification {
     this.period = params.period;
     this.currentPrice = params.currentPrice;
     this.targetPrice = params.targetPrice;
+  }
+}
+
+export class PriceNotification extends BaseNotification {
+  price: number;
+  min: number;
+  max: number;
+  streak: number;
+  decision: Decision;
+
+  constructor({
+    triggered,
+    cooldown,
+    symbol,
+    ...params
+  }: Partial<PriceNotification>) {
+    super({ cooldown, triggered, symbol });
+
+    this.price = params.price;
+    this.min = params.min;
+    this.max = params.max;
+    this.streak = params.streak;
+    this.decision = params.decision;
   }
 }
