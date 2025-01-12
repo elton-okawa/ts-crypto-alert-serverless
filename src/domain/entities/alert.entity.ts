@@ -17,7 +17,7 @@ export class Alert extends Entity {
 
   symbol: string;
   percentages: PercentageAlert[];
-  price: PriceAlert;
+  price: PriceAlert | null;
 
   private percentageByPeriod: Record<Period, PercentageAlert>;
 
@@ -25,9 +25,11 @@ export class Alert extends Entity {
     super(params);
 
     this.symbol = params.symbol;
-    this.percentages = PercentageAlert.createMany(params.percentages);
+    this.percentages = params.percentages
+      ? PercentageAlert.createMany(params.percentages)
+      : [];
     this.percentageByPeriod = toMap(this.percentages, 'period');
-    this.price = PriceAlert.create(params.price);
+    this.price = params.price ? PriceAlert.create(params.price) : null;
   }
 
   getPercentage(period: Period, referenceDate: Date) {

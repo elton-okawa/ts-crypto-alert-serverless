@@ -7,6 +7,8 @@ import {
   INotifier,
   IPercentageAlertUseCase,
   Cryptocurrency,
+  PercentageAlert,
+  PriceAlert,
 } from '@src/domain';
 import { Logger } from '@src/logger';
 import { merge } from 'lodash';
@@ -60,8 +62,30 @@ export class SendAlertUseCase implements IUseCase<void, void> {
     this.logger.log('Finished use case!');
   }
 
-  private alertFor(symbol: string, alertMap: Record<string, Alert>): Alert {
-    return merge({}, alertMap['default'], alertMap[symbol] ?? {});
+  private alertFor(
+    symbol: string,
+    alertMap: Record<string, Alert>,
+  ): { percentages: PercentageAlert[]; price: PriceAlert } {
+    const def = alertMap['default'];
+    const specific = alertMap[symbol];
+
+    if (!specific) {
+      return {
+        percentages: def.percentages,
+        price: def.price,
+      };
+    }
+
+    const data = {
+      percentages: PercentageAlert.createMany(
+        specific.percentages.length > 0
+          ? specific.percentages
+          : def.percentages,
+      ),
+      price: PriceAlert.create(merge({}, def.price, specific.price ?? {})),
+    };
+
+    return data;
   }
 
   private async calculatePercentageNotifications(

@@ -2,7 +2,7 @@ import { ValueObject } from '@src/domain/core';
 import { Cooldown } from './cooldown.vo';
 
 export type BaseAlertParams = {
-  cooldown: string;
+  cooldown: string | Cooldown;
 };
 
 export abstract class BaseAlert<T> extends ValueObject {
@@ -11,7 +11,10 @@ export abstract class BaseAlert<T> extends ValueObject {
   constructor(params: Partial<BaseAlertParams>) {
     super();
 
-    this.cooldown = Cooldown.create(params.cooldown);
+    this.cooldown =
+      params.cooldown instanceof Cooldown
+        ? params.cooldown
+        : Cooldown.create(params.cooldown);
   }
 
   abstract triggered(value: T): boolean;
