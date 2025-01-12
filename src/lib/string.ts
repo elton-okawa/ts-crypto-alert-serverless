@@ -12,6 +12,7 @@ export function dollar(value: number): string {
 export type PercentageOptions = {
   decimalPlaces?: number;
   includeSymbol?: boolean;
+  includeSignal?: boolean;
 };
 
 export function percentage(
@@ -24,9 +25,12 @@ export function percentage(
 
   const decimalPlaces = options.decimalPlaces ?? 2;
   const includeSymbol = options.includeSymbol ?? true;
+  const includeSignal = options.includeSignal ?? true;
+
+  let signal = '';
+  if (includeSignal) signal = value > 0 ? '+' : '-';
 
   const percentage = Math.abs(value * 100);
-  const signal = value > 0 ? '+' : '-';
   const symbol = includeSymbol ? '%' : '';
   return `${signal}${percentage.toFixed(decimalPlaces)}${symbol}`;
 }

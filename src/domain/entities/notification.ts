@@ -1,6 +1,6 @@
 import { ValueObject } from '@src/domain/core';
 import { CryptoPrice } from './crypto-price';
-import { Period } from './period';
+import { Period, PeriodHelper } from './period';
 import { toMap, toMapArray } from '@src/lib';
 import { Decision } from '../types';
 
@@ -92,12 +92,20 @@ export class PercentageNotification extends BaseNotification {
   }
 }
 
+export type HistoricalPrice = {
+  period: Period;
+  min: number;
+  max: number;
+};
+
 export class PriceNotification extends BaseNotification {
   price: number;
   min: number;
   max: number;
   streak: number;
   decision: Decision;
+  // always sorted by period
+  history: HistoricalPrice[];
 
   constructor({
     triggered,
@@ -112,5 +120,6 @@ export class PriceNotification extends BaseNotification {
     this.max = params.max;
     this.streak = params.streak;
     this.decision = params.decision;
+    this.history = params.history;
   }
 }

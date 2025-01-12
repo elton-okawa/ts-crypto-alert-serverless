@@ -1,25 +1,32 @@
 import { Decision } from '@src/domain';
 
-export type ColoredField = {
+export type StyledField = {
   value: string;
-  color: string;
+  style: string;
+};
+
+export type PriceHistoryField = {
+  min: StyledField;
+  max: StyledField;
 };
 
 export type CryptoAlertTemplateData = {
   subject: string;
   percentage: {
     code: string;
-    yesterday: ColoredField;
-    lastWeek: ColoredField;
-    lastMonth: ColoredField;
-    lastYear: ColoredField;
-    lastTwoYears: ColoredField;
+    yesterday: StyledField;
+    lastWeek: StyledField;
+    lastMonth: StyledField;
+    lastYear: StyledField;
+    lastTwoYears: StyledField;
   }[];
   price: {
     color: string;
     code: string;
-    value: string;
+    value: StyledField;
     decision: Decision;
     streak: string;
+    // example of possible keys: lastYear, lastTwoYears
+    history: Record<string, PriceHistoryField>;
   }[];
 };

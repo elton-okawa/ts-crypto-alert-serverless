@@ -123,13 +123,13 @@ function renderPrices(prices: CryptoAlertProps['prices']) {
             <TableRow key={row.code} className={`bg-[${row.hexColor}]`}>
               <TableData>{row.code}</TableData>
               <TableData>
-                <EmphasisText className={row.value.className}>
+                <EmphasisText className={`p-4px ${row.value.className}`}>
                   {row.value.value}
                 </EmphasisText>
               </TableData>
               <TableData>
                 <EmphasisText
-                  className={`text-sx ${row.history.lastYear.min.className}`}
+                  className={`text-xs ${row.history.lastYear.min.className}`}
                 >
                   {row.history.lastYear.min.value}
                 </EmphasisText>
@@ -197,8 +197,8 @@ CryptoAlert.PreviewProps = {
     streak: (index * index).toString(),
     history: {
       lastYear: {
-        min: { value: '235 10%', className: '' },
-        max: { value: '500 40%', className: '' },
+        min: { value: '2.35e+4 1500%', className: '' },
+        max: { value: '5.12e+4 2055%', className: '' },
       },
       lastTwoYears: {
         min: { value: '100 10%', className: '' },

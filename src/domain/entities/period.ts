@@ -29,6 +29,14 @@ export const PeriodHelper = {
     return periodToDate[period](reference);
   },
 
+  getDays(period: Period): number {
+    return periodToDays[period];
+  },
+
+  getKey(period: Period): string {
+    return periodToKey[period];
+  },
+
   toReadable(period: Period): string {
     return periodToReadable[period];
   },
@@ -36,6 +44,34 @@ export const PeriodHelper = {
 
 const hoursCompose = (amount: number) =>
   compose(subHours(amount), setMinutes(0), setSeconds(0), setMilliseconds(0));
+
+const periodToKey: Record<Period, string> = {
+  [Period.HOURLY]: 'lastHour',
+  [Period.HOURS_3]: 'lastThreeHours',
+  [Period.HOURS_6]: 'lastSixHours',
+  [Period.HOURS_12]: 'lastTwelveHours',
+  [Period.DAILY]: 'lastDay',
+  [Period.WEEKLY]: 'lastWeek',
+  [Period.MONTHLY]: 'lastMonth',
+  [Period.QUARTERLY]: 'lastQuarter',
+  [Period.SEMI_ANNUAL]: 'lastSemester',
+  [Period.YEARLY]: 'lastYear',
+  [Period.TWO_YEARS]: 'lastTwoYears',
+};
+
+const periodToDays: Record<Period, number> = {
+  [Period.HOURLY]: 0,
+  [Period.HOURS_3]: 0,
+  [Period.HOURS_6]: 0,
+  [Period.HOURS_12]: 0,
+  [Period.DAILY]: 1,
+  [Period.WEEKLY]: 7,
+  [Period.MONTHLY]: 30,
+  [Period.QUARTERLY]: 120,
+  [Period.SEMI_ANNUAL]: 180,
+  [Period.YEARLY]: 365,
+  [Period.TWO_YEARS]: 365 * 2,
+};
 
 const periodToDate: Record<Period, (ref: Date) => Date> = {
   [Period.HOURLY]: hoursCompose(1),

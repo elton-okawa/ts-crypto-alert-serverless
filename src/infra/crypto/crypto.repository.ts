@@ -202,11 +202,6 @@ export class CryptoRepository implements ICryptoRepository {
           },
         },
         {
-          $sort: {
-            createdAt: -1,
-          },
-        },
-        {
           $addFields: {
             date: { $dateToString: { format: '%Y-%m-%d', date: '$createdAt' } },
           },
@@ -218,6 +213,11 @@ export class CryptoRepository implements ICryptoRepository {
             price: { $first: '$price' },
             pair: { $first: '$pair' },
             createdAt: { $first: '$createdAt' },
+          },
+        },
+        {
+          $sort: {
+            createdAt: -1,
           },
         },
         {

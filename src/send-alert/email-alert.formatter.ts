@@ -1,15 +1,17 @@
 import {
   Decision,
+  HistoricalPrice,
   INotificationFormatter,
   Notification,
   PercentageByCrypto,
   PercentageNotification,
   Period,
+  PeriodHelper,
   PriceNotification,
 } from '@src/domain';
-import { ColoredField, CryptoAlertTemplateData } from './types';
+import { StyledField, CryptoAlertTemplateData } from './types';
 import Color from 'colorjs.io';
-import { percentage } from '@src/lib';
+import { percentage, toMap } from '@src/lib';
 import {
   BUY_START_COLOR,
   SELL_START_COLOR,
@@ -17,6 +19,7 @@ import {
   SELL_END_COLOR,
   MAX_STREAK,
   KEEP_COLOR,
+  EMPHASIS_DIFF,
 } from './constants';
 
 const dateFormatter = new Intl.DateTimeFormat('pt-BR');
@@ -50,18 +53,59 @@ export class EmailAlertFormatter
   private formatPrices(
     prices: PriceNotification[],
   ): CryptoAlertTemplateData['price'] {
-    return prices.map((p) => ({
-      color: this.interpolateColor(p.decision, p.streak, MAX_STREAK),
-      code: p.symbol,
-      value: p.price.toPrecision(p.price > 0 ? 6 : 4),
-      decision: p.decision,
-      streak: p.streak >= MAX_STREAK ? `${MAX_STREAK}+` : p.streak.toString(),
-    }));
+    return prices.map((p) => {
+      const history = p.history.map((entry) =>
+        this.formatHistoricalPrice(p.price, entry),
+      );
+
+      const hasEmphasis = history.some((history) =>
+        [history.min, history.max].some((v) => !!v.style),
+      );
+
+      return {
+        color: this.interpolateColor(p.decision, p.streak, MAX_STREAK),
+        code: p.symbol,
+        value: {
+          value: this.formatPrice(p.price),
+          style: hasEmphasis ? EMPHASIS_DIFF.style : '',
+        },
+        decision: p.decision,
+        streak: p.streak >= MAX_STREAK ? `${MAX_STREAK}+` : p.streak.toString(),
+        history: toMap(history, 'period', (p) => PeriodHelper.getKey(p)),
+      };
+    });
   }
 
-  private formatPercentage(data: PercentageNotification): ColoredField {
+  private formatPrice(price: number) {
+    return price > 100 ? price.toFixed(0) : price.toPrecision(2);
+  }
+
+  private formatHistoricalPrice(price: number, field: HistoricalPrice) {
     return {
-      color: this.getColor(data?.difference),
+      period: field.period,
+      min: this.formatHistoryField(price, field.min, true),
+      max: this.formatHistoryField(price, field.max),
+    };
+  }
+
+  private formatHistoryField(price: number, target: number, isMin = false) {
+    const percentageDiff = isMin
+      ? (price - target) / target
+      : (target - price) / price;
+    let style = '';
+    if (Math.abs(percentageDiff) <= EMPHASIS_DIFF.diff) {
+      style = EMPHASIS_DIFF.style;
+    }
+
+    return {
+      style,
+      value: `${this.formatPrice(target)} ${percentage(percentageDiff, { decimalPlaces: 0, includeSignal: false })}`,
+    };
+  }
+
+  private formatPercentage(data: PercentageNotification): StyledField {
+    return {
+      style: [`color:${this.getColor(data?.difference)}`].join('; '),
       value: percentage(data?.difference, { decimalPlaces: 0 }),
     };
   }

@@ -6,7 +6,7 @@ export type EmphasisTextProps = PropsWithChildren<{
 }>;
 
 export const EmphasisText = ({ children, className }: EmphasisTextProps) => (
-  <p className={`m-0 p-px rounded text-nowrap ${className ?? ''}`}>
+  <p className={`m-0 p-2px rounded text-nowrap ${className ?? ''}`}>
     {children}
   </p>
 );

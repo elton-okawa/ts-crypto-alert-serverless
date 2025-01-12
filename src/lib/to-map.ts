@@ -1,10 +1,13 @@
 export function toMap<
   K extends string | number | symbol,
   T extends Record<K, Object>,
->(values: T[], key: K): Record<string, T> {
+>(values: T[], key: K, formatKey?: (v: T[K]) => string): Record<string, T> {
   return values.reduce(
     (map, current) => {
-      map[current[key].toString()] = current;
+      const mapKey = formatKey
+        ? formatKey(current[key])
+        : current[key].toString();
+      map[mapKey] = current;
       return map;
     },
     {} as Record<string, T>,
