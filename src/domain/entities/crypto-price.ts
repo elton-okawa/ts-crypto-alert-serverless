@@ -23,7 +23,7 @@ export class CryptoPrice extends Entity {
   }
 
   percentageDifference(other: CryptoPrice): number {
-    return this.difference(other) / other.price;
+    return this.price / other.price;
   }
 
   format(): string {
