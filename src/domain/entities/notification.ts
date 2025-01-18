@@ -92,11 +92,26 @@ export class PercentageNotification extends BaseNotification {
   }
 }
 
-export type HistoricalPrice = {
+export class HistoricalPrice extends ValueObject {
   period: Period;
   min: number;
   max: number;
-};
+  count: number;
+
+  /** used period number of days to calculate min and max */
+  get complete() {
+    return this.count >= PeriodHelper.getDays(this.period) - 15; // we don't need exactly 1 year
+  }
+
+  constructor(params: Partial<HistoricalPrice>) {
+    super();
+
+    this.period = params.period;
+    this.min = params.min;
+    this.max = params.max;
+    this.count = params.count;
+  }
+}
 
 export class PriceNotification extends BaseNotification {
   price: number;
@@ -120,6 +135,6 @@ export class PriceNotification extends BaseNotification {
     this.max = params.max;
     this.streak = params.streak;
     this.decision = params.decision;
-    this.history = params.history;
+    this.history = HistoricalPrice.createMany(params.history);
   }
 }
