@@ -1,4 +1,10 @@
-import { Cryptocurrency, Alert, CryptoPrice } from '@src/domain/entities';
+import {
+  Cryptocurrency,
+  Alert,
+  CryptoPrice,
+  HistoricalPrice,
+  Period,
+} from '@src/domain/entities';
 
 export interface ICryptoRepository {
   listSymbols(): Promise<string[]>;
@@ -21,6 +27,8 @@ export interface ICryptoRepository {
     symbol: string,
     options: { limit: number },
   ): Promise<CryptoPrice[]>;
+
+  getHistoricalPrice(symbol: string, period: Period): Promise<HistoricalPrice>;
 }
 
 export type MeanPriceResult = {

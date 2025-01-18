@@ -3,8 +3,11 @@ import {
   Alert,
   CryptoPrice,
   Cryptocurrency,
+  HistoricalPrice,
   ICryptoRepository,
   MeanPriceResult,
+  Period,
+  PeriodHelper,
 } from '@src/domain';
 import { Logger } from '@src/logger';
 
@@ -229,5 +232,59 @@ export class CryptoRepository implements ICryptoRepository {
     this.logger.debug(`Daily prices got successfully!`);
 
     return CryptoPrice.createMany(results);
+  }
+
+  async getHistoricalPrice(
+    symbol: string,
+    period: Period,
+  ): Promise<HistoricalPrice> {
+    this.logger.debug(
+      `Getting historical price of "${symbol}" for "${period}"...`,
+    );
+
+    const [result] = await this.database.db
+      .collection(CryptoPrice.TABLE)
+      .aggregate<{ symbol: string; min: number; max: number; period: Period }>([
+        {
+          $match: {
+            symbol: symbol,
+            createdAt: { $gte: PeriodHelper.getDate(period, new Date()) },
+          },
+        },
+        // group by date first because we might have more than one price per day
+        {
+          $addFields: {
+            date: { $dateToString: { format: '%Y-%m-%d', date: '$createdAt' } },
+          },
+        },
+        {
+          $group: {
+            _id: '$date',
+            symbol: { $first: '$symbol' },
+            min: { $min: '$price' },
+            max: { $max: '$price' },
+          },
+        },
+        // then we can group by symbol and count
+        {
+          $group: {
+            _id: '$symbol',
+            symbol: { $first: '$symbol' },
+            min: { $min: '$min' },
+            max: { $max: '$max' },
+            count: { $sum: 1 },
+          },
+        },
+        {
+          $addFields: {
+            period,
+          },
+        },
+      ])
+      .toArray();
+
+    this.logger.debug(`Historical prices got successfully!`);
+
+    return HistoricalPrice.create(result);
   }
 }
