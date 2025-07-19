@@ -26,14 +26,6 @@ jobs:
           echo "Current version: $PACKAGE_VERSION"
           echo "version=$PACKAGE_VERSION" >> $GITHUB_OUTPUT
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '22'
-
-      - name: Enable Corepack (for Yarn Berry)
-        run: corepack enable
-
       - name: Install dependencies
         run: yarn
 
@@ -45,7 +37,7 @@ jobs:
         run: |
           FILENAME=${{ steps.package_version.outputs.version }}.zip
           echo "Compressed file: '$FILENAME'"
-          zip -r $FILENAME .yarnrc.yml dist package.json yarn.lock
+          zip -r $FILENAME node_modules .yarnrc.yml dist package.json yarn.lock
           echo "filename=$FILENAME" >> $GITHUB_OUTPUT
       - name: Archive production artifacts
         uses: actions/upload-artifact@v4
