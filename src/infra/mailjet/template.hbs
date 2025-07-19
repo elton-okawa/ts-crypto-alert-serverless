@@ -1,0 +1,124 @@
+<html dir='ltr' lang='en'>
+  <head>
+    <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
+    <meta name='x-apple-disable-message-reformatting' />
+    <!--$-->
+  </head>
+  <div
+    style='display:none;overflow:hidden;line-height:1px;opacity:0;max-height:0;max-width:0'
+  >
+    Crypto Alert
+  </div>
+  <body
+    style='font-family:ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";width:100%'
+  >
+    <h1 style='text-align:center'>Price</h1>
+    <table style='border-collapse:collapse;margin:auto'>
+      <thead>
+        <tr
+          style='border-bottom-width:1px;border-left-width:0px;border-right-width:0px;border-top-width:0px;border-color:rgb(209,213,219);border-style:solid'
+        >
+          <th style='font-weight:600;padding:0.5rem;width:50px'>Code</th>
+          <th style='font-weight:600;padding:0.5rem'>Price</th>
+          <th style='font-weight:600;padding:0.5rem'>1y</th>
+          <th style='font-weight:600;padding:0.5rem'>2y</th>
+          <th style='font-weight:600;padding:0.5rem;width:20px'>R</th>
+          <th style='font-weight:600;padding:0.5rem;width:30px'>S</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each price}}
+          <tr
+            style='border-bottom-width:1px;border-left-width:0px;border-right-width:0px;border-top-width:0px;border-color:rgb(209,213,219);border-style:solid;background-color:{{this.color}}'
+          >
+            <td style='padding:0.5rem;text-align:center'>{{this.code}}</td>
+            <td style='padding:0.5rem;text-align:center'>
+              <p
+                style='margin:0px;padding:4px;border-radius:0.25rem;text-wrap:nowrap;{{this.value.style}}'
+              >
+                {{this.value.value}}
+              </p>
+            </td>
+            <td style='padding:0.5rem;text-align:center'>
+              <p
+                class='text-sx'
+                style='margin:0px;padding:2px;border-radius:0.25rem;text-wrap:nowrap;font-size:0.75rem;line-height:1rem;{{this.history.lastYear.min.style}}'
+              >
+                {{this.history.lastYear.min.value}}
+              </p>
+              <p
+                style='margin:0px;padding:2px;border-radius:0.25rem;text-wrap:nowrap;font-size:0.75rem;line-height:1rem;{{this.history.lastYear.max.style}}'
+              >
+                {{this.history.lastYear.max.value}}
+              </p>
+            </td>
+            <td style='padding:0.5rem;text-align:center'>
+              <p
+                class='text-sx'
+                style='margin:0px;padding:2px;border-radius:0.25rem;text-wrap:nowrap;font-size:0.75rem;line-height:1rem;{{this.history.lastTwoYears.min.style}}'
+              >
+                {{this.history.lastTwoYears.min.value}}
+              </p>
+              <p
+                style='margin:0px;padding:2px;border-radius:0.25rem;text-wrap:nowrap;font-size:0.75rem;line-height:1rem;{{this.history.lastTwoYears.max.style}}'
+              >
+                {{this.history.lastTwoYears.max.value}}
+              </p>
+            </td>
+            <td style='padding:0.5rem;text-align:center'>{{this.decision}}</td>
+            <td style='padding:0.5rem;text-align:center'>{{this.streak}}</td>
+          </tr>
+        {{/each}}
+      </tbody>
+    </table>
+    <h1 style='text-align:center'>Percentage</h1>
+    <table style='border-collapse:collapse;margin:auto'>
+      <thead>
+        <tr
+          style='border-bottom-width:1px;border-left-width:0px;border-right-width:0px;border-top-width:0px;border-color:rgb(209,213,219);border-style:solid'
+        >
+          <th style='font-weight:600;padding:0.5rem'></th>
+          <th style='font-weight:600;padding:0.5rem'>1d</th>
+          <th style='font-weight:600;padding:0.5rem'>1w</th>
+          <th style='font-weight:600;padding:0.5rem'>1m</th>
+          <th style='font-weight:600;padding:0.5rem'>1y</th>
+          <th style='font-weight:600;padding:0.5rem'>2y</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each percentage}}
+          <tr
+            style='border-bottom-width:1px;border-left-width:0px;border-right-width:0px;border-top-width:0px;border-color:rgb(209,213,219);border-style:solid'
+          >
+            <td style='padding:0.5rem;text-align:center'>{{this.code}}</td>
+            <td
+              style='padding:0.5rem;text-align:center;{{this.yesterday.style}}'
+            >
+              {{this.yesterday.value}}
+            </td>
+            <td
+              style='padding:0.5rem;text-align:center;{{this.lastWeek.style}}'
+            >
+              {{this.lastWeek.value}}
+            </td>
+            <td
+              style='padding:0.5rem;text-align:center;{{this.lastMonth.style}}'
+            >
+              {{this.lastMonth.value}}
+            </td>
+            <td
+              style='padding:0.5rem;text-align:center;{{this.lastYear.style}}'
+            >
+              {{this.lastYear.value}}
+            </td>
+            <td
+              style='padding:0.5rem;text-align:center;{{this.lastTwoYears.style}}'
+            >
+              {{this.lastTwoYears.value}}
+            </td>
+          </tr>
+        {{/each}}
+      </tbody>
+    </table>
+  </body>
+</html>

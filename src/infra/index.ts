@@ -4,7 +4,7 @@ import { databaseService } from './database';
 import { discordService } from './discord';
 
 export { discordNotifier } from './discord';
-export { sendgridNotifierFactory } from './sendgrid';
+export { mailjetNotifierFactory } from './mailjet';
 
 export { cryptoRepository } from './crypto';
 export const cryptoApi = binanceApi;
