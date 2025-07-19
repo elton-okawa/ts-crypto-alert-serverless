@@ -39,18 +39,13 @@ variable "binance_api_url" {
   type = string
 }
 
-variable "sendgrid_mail_to" {
-  description = "Sendgrid mail to"
+variable "mailjet_mail_to" {
+  description = "Mailjet mail to"
   type = string
 }
 
-variable "sendgrid_mail_from" {
-  description = "Sengrid mail from"
-  type = string
-}
-
-variable "sendgrid_template_id_crypto_alert" {
-  description = "Sendgrid template ID crypto alert"
+variable "mailjet_mail_from" {
+  description = "Mailjet mail from"
   type = string
 }
 
@@ -70,7 +65,12 @@ variable "discord_channel_id" {
   type = string
 }
 
-variable "sendgrid_api_key" {
-  description = "Sendgrid API key"
+variable "mailjet_api_key" {
+  description = "Mailjet API key"
+  type = string
+}
+
+variable "mailjet_secret_key" {
+  description = "Mailjet secret key"
   type = string
 }

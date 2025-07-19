@@ -51,10 +51,10 @@ resource "google_cloudfunctions2_function" "function" {
       DATABASE_URL = var.database_url
       DISCORD_BOT_TOKEN = var.discord_bot_token
       DISCORD_CHANNEL_ID = var.discord_channel_id
-      SENDGRID_API_KEY = var.sendgrid_api_key
-      SENDGRID_MAIL_TO = var.sendgrid_mail_to
-      SENDGRID_MAIL_FROM = var.sendgrid_mail_from
-      SENDGRID_TEMPLATE_ID_CRYPTO_ALERT = var.sendgrid_template_id_crypto_alert
+      MAILJET_API_KEY = var.mailjet_api_key
+      MAILJET_SECRET_KEY = var.mailjet_secret_key
+      MAILJET_MAIL_TO = var.mailjet_mail_to
+      MAILJET_MAIL_FROM = var.mailjet_mail_from
     }
   }
 }

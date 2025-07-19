@@ -3,7 +3,7 @@ import { SendAlertUseCase } from './use-case';
 import {
   cryptoRepository,
   discordNotifier,
-  sendgridNotifierFactory,
+  mailjetNotifierFactory,
 } from '@src/infra';
 import { handlerTemplateFactory } from '@src/lib';
 import { PercentageAlertUseCase } from './percentage-alert';
@@ -14,7 +14,7 @@ const percentageAlert = new PercentageAlertUseCase(cryptoRepository);
 const priceAlert = new PriceAlertUseCase(cryptoRepository);
 const useCase = new SendAlertUseCase(
   cryptoRepository,
-  [discordNotifier, sendgridNotifierFactory(new EmailAlertFormatter())],
+  [discordNotifier, mailjetNotifierFactory(new EmailAlertFormatter())],
   percentageAlert,
   priceAlert,
 );
