@@ -1,6 +1,5 @@
 {
   "name": "ts-crypto-alert-serverless",
-  "packageManager": "yarn@4.9.2",
   "version": "0.3.0",
   "description": "",
   "author": "",
