@@ -113,6 +113,8 @@ jobs:
       TF_VAR_mailjet_api_key: ${{ secrets.MAILJET_API_KEY }}
       TF_VAR_mailjet_secret_key: ${{ secrets.MAILJET_SECRET_KEY }}
     steps:
+      - name: Debug source filepath
+        run: echo '${{ needs.upload.outputs.source_path }}'
       - name: Checkout
         uses: actions/checkout@v4
       - name: Terraform init
